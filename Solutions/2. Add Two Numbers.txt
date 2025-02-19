@@ -1,0 +1,90 @@
+------ More efficient than the next code, TC:- O(max(m,n)), SC:- O(1) ------
+
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        boolean carry = false;
+        ListNode dummy = new ListNode(0), temp = dummy;
+        while (l1 != null && l2 != null) {
+            int value = l1.val + l2.val;
+            ListNode node = new ListNode();
+            if (carry) {
+                value++;
+                if (value < 10) {
+                    carry = false;
+                }
+            } else {
+                if (value >= 10) {
+                    carry = true;
+                }
+            }
+            node.val = (value % 10);
+            temp.next = node;
+            temp = temp.next;
+            l1 = l1.next;
+            l2 = l2.next;
+        }
+        if (l2 != null) {
+            l1 = l2;
+        }
+        while (l1 != null) {
+            ListNode node = new ListNode();
+            temp.next = node;
+            int value = l1.val;
+            if (carry) {
+                if (value + 1 < 10) {
+                    carry = false;
+                }
+                value++;
+            }
+            node.val = (value % 10);
+            l1 = l1.next;
+            temp = temp.next;
+        }
+        if (carry) {
+            temp.next = new ListNode(1);
+        }
+        return dummy.next;
+    }
+}
+
+------ TC:- O(max(m,n)), SC:- O(1) ------
+
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode(0);
+        ListNode curr = head;
+        boolean c = false;
+        while(l1 != null || l2 != null){
+            int a = 0, b = 0, add;
+            if(l1 != null){
+                a = l1.val;
+                l1 = l1.next;
+            }
+            if(l2 != null){
+                b = l2.val;
+                l2 = l2.next;
+            }
+            add = a + b;
+            if(c){
+                if(add + 1 > 9){
+                    add = (add + 1) % 10;
+                }
+                else{
+                    add++;
+                    c = false;
+                }
+            }else{
+                if(add > 9){
+                    add = add % 10;
+                    c = true;
+                }
+            }
+            curr.next = new ListNode(add);
+            curr = curr.next;
+        }
+        if(c){
+            curr.next = new ListNode(1);
+        }
+        return head.next;
+    }
+}

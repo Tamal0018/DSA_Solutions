@@ -1,0 +1,47 @@
+------ TC:- O(n^2), SC:- O(n) where n = number of nodes ------
+
+class Solution {
+    private int getHeight(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return Math.max(getHeight(root.left), getHeight(root.right)) + 1;
+    }
+
+    private boolean check(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        boolean b = check(root.left) && check(root.right);
+        int lt = getHeight(root.left);
+        int rt = getHeight(root.right);
+        if (Math.abs(lt - rt) < 2 && b) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isBalanced(TreeNode root) {
+        return check(root);
+    }
+}
+
+------ My optimal solution, TC:- O(n), SC:- O(h) where h = height of the tree ------
+
+class Solution {
+    private int check(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int lt = check(root.left);
+        int rt = check(root.right);
+        if (lt == -1 || rt == -1 || Math.abs(lt - rt) > 1) {
+            return -1;
+        }
+        return Math.max(lt, rt) + 1;
+    }
+
+    public boolean isBalanced(TreeNode root) {
+        return check(root) != -1;
+    }
+}

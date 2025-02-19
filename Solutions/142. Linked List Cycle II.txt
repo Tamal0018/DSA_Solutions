@@ -1,0 +1,21 @@
+Refernce:- https://takeuforward.org/data-structure/starting-point-of-loop-in-a-linked-list/
+------ TC:- O(n), SC:- O(1) where n = length of list ------
+
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode fast = head, slow = head;
+        do {
+            if (fast == null || fast.next == null) {
+                return null;
+            }
+            fast = fast.next.next;
+            slow = slow.next;
+        } while (fast != slow);
+        fast = head;
+        while (fast != slow) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return fast;
+    }
+}

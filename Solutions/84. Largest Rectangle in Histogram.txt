@@ -1,0 +1,106 @@
+----- TC:- O(n^2), SC:- O(1) -----
+
+class Solution {
+    private int getMaxRect(int[] heights, int idx) {
+        int max = heights[idx];
+        int i = idx - 1;
+        while (i >= 0 && heights[i] >= heights[idx]) {
+            max += heights[idx];
+            i--;
+        }
+        i = idx + 1;
+        while (i < heights.length && heights[i] >= heights[idx]) {
+            max += heights[idx];
+            i++;
+        }
+        return max;
+    }
+
+    public int largestRectangleArea(int[] heights) {
+        int max = 0;
+        for (int i = 0; i < heights.length; i++) {
+            max = Math.max(max, getMaxRect(heights, i));
+        }
+        return max;
+    }
+}
+
+----- TC:- O(2n), SC:- O(4n) for 2 stacks and 2 arrays -----
+
+class Solution {
+    private void getNSE(int[] heights, int[] nseL, int[] nseR){
+        Deque<Integer> stackL = new ArrayDeque<>();
+        Deque<Integer> stackR = new ArrayDeque<>();
+        for(int i = 0; i < heights.length; i++){
+            while(stackL.size() != 0 && heights[stackL.peek()] >= heights[i]){
+                stackL.pop();
+            }
+            nseL[i] = (stackL.size() == 0) ? -1 : stackL.peek();
+            stackL.push(i);
+            int j = heights.length - i - 1;
+            while(stackR.size() != 0 && heights[stackR.peek()] >= heights[j]){
+                stackR.pop();
+            }
+            nseR[j] = (stackR.size() == 0) ? heights.length : stackR.peek();
+            stackR.push(j);
+        }
+    }
+    public int largestRectangleArea(int[] heights) {
+        int maxResult = 0;
+        int[] nseL = new int[heights.length];
+        int[] nseR = new int[heights.length];
+        getNSE(heights, nseL, nseR);
+        for(int i = 0; i < heights.length; i++){
+            int span = (i - nseL[i]) + (nseR[i] - i) - 1; // We can use this also, (nseR[i] - nseL[i]) - 1;
+            int area = span * heights[i];
+            maxResult = Math.max(maxResult, area);
+        }
+        return maxResult;
+    }
+}
+
+Reference:- https://www.youtube.com/watch?v=Bzat9vgD0fs&list=PLgUwDviBIf0pOd5zvVVSzgpo6BaCpHT9c&index=12&t=1589s
+
+----- Optimal, TC:- O(2n), SC:- O(n) for stack -----
+
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int maxResult = 0;
+        Deque<Integer> stack = new ArrayDeque<>();
+        for (int i = 0; i < heights.length; i++) {
+            while (stack.size() != 0 && heights[stack.peek()] >= heights[i]) {
+                int idx = stack.pop();
+                int pse = (stack.size() == 0) ? -1 : stack.peek();
+                int result = (i - pse - 1) * heights[idx];
+                maxResult = Math.max(maxResult, result);
+            }
+            stack.push(i);
+        }
+        while (stack.size() != 0) {
+            int idx = stack.pop();
+            int pse = (stack.size() == 0) ? -1 : stack.peek();
+            int result = (heights.length - pse - 1) * heights[idx];
+            maxResult = Math.max(maxResult, result);
+        }
+        return maxResult;
+    }
+}
+
+----- Same approach, but using one while loop, TC:- O(2n), SC:- O(n) for stack -----
+
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int maxResult = 0;
+        Deque<Integer> stack = new ArrayDeque<>();
+        for (int i = 0; i <= heights.length; i++) {
+            while (stack.size() != 0 && (i == heights.length || heights[stack.peek()] >= heights[i])) {
+                int idx = stack.pop();
+                int pse = (stack.size() == 0) ? -1 : stack.peek();
+                int result = (i - pse - 1) * heights[idx];
+                maxResult = Math.max(maxResult, result);
+            }
+            stack.push(i);
+        }
+        return maxResult;
+    }
+}

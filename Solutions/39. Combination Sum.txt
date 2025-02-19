@@ -1,0 +1,25 @@
+--- My solution, TC:- O(2^t * k), SC:- O(k*x), where k = height of recursion, x = total number of combinations ---
+---- Reference:- https://www.youtube.com/watch?v=OyZFFqQtu98&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9&index=8 ----
+
+class Solution {
+    private void check(int[] nums, int target, int idx, int sum, List list, List ans) {
+        if (sum > target) {
+            return;
+        }
+        if (sum == target) {
+            ans.add(new ArrayList(list));
+        }
+        for (int i = idx; i < nums.length; i++) {
+            list.add(nums[i]);
+            check(nums, target, i, sum + nums[i], list, ans);
+            list.remove((Integer) nums[i]);
+        }
+    }
+
+    public List<List<Integer>> combinationSum(int[] nums, int target) {
+        List<List<Integer>> ans = new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
+        check(nums, target, 0, 0, list, ans);
+        return ans;
+    }
+}

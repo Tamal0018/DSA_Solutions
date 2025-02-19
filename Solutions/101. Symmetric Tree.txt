@@ -1,0 +1,40 @@
+--------------------- Recursive ------------------------
+class Solution {
+    boolean isSymm(TreeNode lt, TreeNode rt){
+        boolean b1 = false, b2 = false;
+        if(lt == null && rt == null){
+            return true;
+        }else if(lt == null || rt == null){
+            return false;
+        }
+        else if(lt.val == rt.val){
+            b1 = (isSymm(lt.left, rt.right));
+            b2 = (isSymm(lt.right, rt.left));
+        }
+        return b1 && b2;
+    }
+    public boolean isSymmetric(TreeNode root) {
+        return isSymm(root.left, root.right);
+    }
+}
+
+--------- Same approach ---------
+
+class Solution {
+    boolean isSymm(TreeNode lt, TreeNode rt) {
+        if (lt == null && rt == null) {
+            return true;
+        } else if (lt == null || rt == null) {
+            return false;
+        } else if (lt.val != rt.val) {
+            return false;
+        } else {
+            return (isSymm(lt.left, rt.right)) && (isSymm(lt.right, rt.left));
+        }
+    }
+
+    public boolean isSymmetric(TreeNode root) {
+        return isSymm(root.left, root.right);
+    }
+}
+----------------------- Iterative ------------------------

@@ -1,0 +1,30 @@
+-----------------My solution-----------------
+class Solution {
+    private void combine(List list, String digits, int idx, char[][] letters, String ans) {
+        if (ans.length() == digits.length()) {
+            list.add(new String(ans));
+            return;
+        }
+        int curr = digits.charAt(idx) - 48;
+        for (int i = 0; i < letters[curr - 2].length; i++) {
+            combine(list, digits, idx + 1, letters, ans + letters[curr - 2][i]);
+        }
+    }
+
+    public List<String> letterCombinations(String digits) {
+        List<String> list = new ArrayList<>();
+        if (digits.length() == 0) return list;
+        char[][] letters = new char[][]{
+                {'a', 'b', 'c'},
+                {'d', 'e', 'f'},
+                {'g', 'h', 'i'},
+                {'j', 'k', 'l'},
+                {'m', 'n', 'o'},
+                {'p', 'q', 'r', 's'},
+                {'t', 'u', 'v'},
+                {'w', 'x', 'y', 'z'}
+        };
+        combine(list, digits, 0, letters, "");
+        return list;
+    }
+}

@@ -1,0 +1,60 @@
+------ My solution:- O(2^n * k), SC:- O(k * x), where k = avg length of every combination and x = number of combinations ------
+------ Reference:- https://www.youtube.com/watch?v=G1fRTGRxXU8&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9&index=10 , we could have used HashSet, but that would increase the TC ------
+
+class Solution {
+    private void check(int[] nums, int idx, int target, int sum, List list, List ans) {
+        if (sum == target) {
+            ans.add(new ArrayList(list));
+            return;
+        }
+        if (sum > target) {
+            return;
+        }
+        for (int i = idx; i < nums.length; i++) {
+            list.add(nums[i]);
+            check(nums, i + 1, target, sum + nums[i], list, ans);
+            list.remove((Integer) nums[i]);
+            while (i < nums.length - 1 && nums[i] == nums[i + 1]) {
+                i++;
+            }
+        }
+    }
+
+    public List<List<Integer>> combinationSum2(int[] nums, int target) {
+        List<Integer> list = new ArrayList<>();
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(nums);
+        check(nums, 0, target, 0, list, ans);
+        return ans;
+    }
+}
+
+------ Same approach ------
+
+class Solution {
+    private void check(int[] nums, int idx, int target, int sum, List list, List ans) {
+        if (sum == target) {
+            ans.add(new ArrayList(list));
+            return;
+        }
+        for (int i = idx; i < nums.length; i++) {
+            if (sum + nums[i] > target) {
+                break;
+            }
+            list.add(nums[i]);
+            check(nums, i + 1, target, sum + nums[i], list, ans);
+            list.remove((Integer) nums[i]);
+            while (i < nums.length - 1 && nums[i] == nums[i + 1]) {
+                i++;
+            }
+        }
+    }
+
+    public List<List<Integer>> combinationSum2(int[] nums, int target) {
+        List<Integer> list = new ArrayList<>();
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(nums);
+        check(nums, 0, target, 0, list, ans);
+        return ans;
+    }
+}

@@ -1,0 +1,72 @@
+Refernce:- https://takeuforward.org/data-structure/4-sum-find-quads-that-add-up-to-a-target-value/
+----- Same approach as 3sum problem, TC:- O(n^3), SC:- O(2* no. of unique 4 sum + n for set) -----
+
+class Solution {
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        HashSet<List<Integer>> ansSet = new HashSet<>();
+        for (int i = 0; i < nums.length - 3; i++) {
+            for (int j = i + 1; j < nums.length - 2; j++) {
+                HashSet<Long> set = new HashSet<>();
+                for (int k = j + 1; k < nums.length; k++) {
+                    long sum = (long) nums[i] + nums[j] + nums[k];
+                    if (set.contains(target - sum)) {
+                        List<Integer> list = new ArrayList<>();
+                        list.add(nums[i]);
+                        list.add(nums[j]);
+                        list.add(nums[k]);
+                        list.add((int) (target - sum));
+                        Collections.sort(list);
+                        ansSet.add(list);
+                    }
+                    set.add((long) nums[k]);
+                }
+            }
+        }
+        return new ArrayList<>(ansSet);
+    }
+}
+
+----- Same approach as 3sum problem, TC:- O(nlogn + n^3), SC:- O(no. of unique 4 sum) to store the answer, else O(1) -----
+
+class Solution {
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> ansList = new ArrayList<>();
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length - 3; ) {
+            for (int j = i + 1; j < nums.length - 2; ) {
+                for (int k = j + 1, l = nums.length - 1; k < l; ) {
+                    long sum = (long) nums[i] + nums[j] + nums[k] + nums[l];
+                    if (target == sum) {
+                        List<Integer> list = new ArrayList<>();
+                        list.add(nums[i]);
+                        list.add(nums[j]);
+                        list.add(nums[k]);
+                        list.add(nums[l]);
+                        ansList.add(list);
+                        k++;
+                        l--;
+                        while (k <= l && nums[k] == nums[k - 1]) {
+                            k++;
+                        }
+                        while (k <= l && nums[l] == nums[l + 1]) {
+                            l--;
+                        }
+                    } else if (target > sum) {
+                        k++;
+                    } else {
+                        l--;
+                    }
+                }
+                j++;
+                while (j < nums.length && nums[j] == nums[j - 1]) {
+                    j++;
+                }
+            }
+            i++;
+            while (i < nums.length && nums[i] == nums[i - 1]) {
+                i++;
+            }
+        }
+        return ansList;
+    }
+}

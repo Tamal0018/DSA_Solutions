@@ -1,0 +1,72 @@
+Striver SDE Sheet:- 
+Multisource shortest path (also works on edges with -ve weight) ---- Floyd Warshall's algo
+Progress:- 84 on 2/6/2023, 88 on 08/06/2023, 101 on 28/08/2023, 126 on 11/12/2023, 
+Target:- Finish 24. all questions by 15th
+Weak:- Graph, Binary search
+Today solved:- 1(bouquet) + 
+
+----- Link:-  -----
+Reference:- 
+----- TC:- O(), SC:- O() -----
+
+Here are short and formal LinkedIn connection request messages:  
+
+1. For Hiring Managers:- Hi [Name], I admire your role at [Company] and would like to connect as I’m exploring Software Engineer opportunities. Your insights would be valuable in understanding [Company]'s hiring process. Looking forward to connecting!
+
+2. For Employees to Connect (Potential Referral in Future):- Hi [Name], I’m inspired by your journey at [Company]! I’m an aspiring Software Engineer looking to join [Company] and would love to connect to learn from your experience. Looking forward to staying in touch!  
+
+3. For Employees (Direct Referral Request):- Hi [Name], thank you for connecting! I’m applying for the [Software Engineer role] at [Company] (Job ID: XXXXX). Your referral could greatly help me in this process. Please let me know if I can share my resume or any additional details. Thank you for your time!
+
+4. Referral:- Hi [Name], I’m applying for the [Software Engineer role] at [Company] (Job ID: XXXXX). Your referral could greatly help me in this process. Please find required details below. Please let me know if I can share any additional details. Thank you for your time!
+Job Link:
+Mail ID:
+Resume Link:
+
+--------------Completion tracker code-----------------
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class Main {
+    public static LocalDate calculateCompletionDate(LocalDate startDate, int totalProblems, double tasksPerDay) {
+        LocalDate currentDate = startDate;
+
+        while (totalProblems > 0) {
+            if (currentDate.getDayOfWeek() != DayOfWeek.SATURDAY && currentDate.getDayOfWeek() != DayOfWeek.SUNDAY) {
+                totalProblems -= tasksPerDay;
+                if (totalProblems < 0) {
+                    // Adjust the date based on the remaining tasks
+                    double remainingTasks = Math.abs(totalProblems);
+                    int remainingDays = (int) Math.ceil(remainingTasks / tasksPerDay);
+                    currentDate = currentDate.plusDays(remainingDays);
+                    break;
+                }
+            }
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return currentDate;
+    }
+
+    public static void main(String[] args) {
+        // Get the current date from the system and add 1 day
+        LocalDate startDate = LocalDate.now().plusDays(1);
+
+        // Total number of problems to complete
+        int totalProblems = 65;
+
+        // Number of tasks completed per day (fractional)
+        double tasksPerDay = 1.5;
+
+        // Calculate the completion date
+        LocalDate completionDate = calculateCompletionDate(startDate, totalProblems, tasksPerDay);
+
+        // Format the result in "DD MMM YYYY" format
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+        String formattedDate = completionDate.format(formatter);
+
+        // Print the result
+        System.out.println("Completion date for " + totalProblems + " problems: " + formattedDate);
+    }
+}

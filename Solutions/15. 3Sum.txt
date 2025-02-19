@@ -1,0 +1,61 @@
+Reference:- https://youtu.be/DhFh8Kw7ymk
+----- TC:- O(n^2), SC:- O(2*no. of unique 3 sum + n for storing elements in set) -----
+
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        HashSet<List<Integer>> listSet = new HashSet<>();
+        for (int i = 0; i < nums.length - 1; i++) {
+            HashSet<Integer> set = new HashSet<>();
+            for (int j = i + 1; j < nums.length; j++) {
+                if (set.contains(-(nums[i] + nums[j]))) {
+                    List<Integer> list = new ArrayList<>();
+                    list.add(nums[i]);
+                    list.add(nums[j]);
+                    list.add(-(nums[i] + nums[j]));
+                    Collections.sort(list);
+                    listSet.add(list);
+                }
+                set.add(nums[j]);
+            }
+        }
+        return new ArrayList<>(listSet);
+    }
+}
+
+----- TC:- O(nlogn + n^2), SC:- O(2*no. of unique 3 sum) to store the answer -----
+
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> ansList = new ArrayList<>();
+        for (int i = 0; i < nums.length - 2; ) {
+            for (int j = i + 1, k = nums.length - 1; j < k; ) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (sum == 0) {
+                    List<Integer> list = new ArrayList<>();
+                    list.add(nums[i]);
+                    list.add(nums[j]);
+                    list.add(nums[k]);
+                    ansList.add(list);
+					j++;
+                    k--;
+                    while (k >= j && nums[j] == nums[j - 1]) {
+                        j++;
+                    }
+                    while (k >= j && nums[k] == nums[k + 1]) {
+                        k--;
+                    }
+                } else if (sum > 0) {
+                    k--;
+                } else {
+                    j++;
+                }
+            }
+            i++;
+            while (i < nums.length - 2 && nums[i] == nums[i - 1]) {
+                i++;
+            }
+        }
+        return ansList;
+    }
+}

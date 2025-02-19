@@ -1,0 +1,22 @@
+----- My solution, TC:- O(n), SC:- O(1) -----
+
+class Solution {
+    private void insert(TreeNode root, TreeNode lt) {
+        TreeNode rt = lt;
+        while (rt.right != null) {
+            rt = rt.right;
+        }
+        rt.right = root.right;
+        root.right = lt;
+        root.left = null;
+    }
+
+    public void flatten(TreeNode root) {
+        while (root != null) {
+            if (root.left != null) { /*If left is not null, we insert whole left subtree between root and root.right*/
+                insert(root, root.left);
+            }
+            root = root.right;
+        }
+    }
+}

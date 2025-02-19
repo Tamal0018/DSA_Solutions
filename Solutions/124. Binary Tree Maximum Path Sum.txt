@@ -1,0 +1,25 @@
+----- My optimal solution, TC:- O(n), SC:- O(h) where h = height of the tree -----
+
+class Solution {
+    private int getSum(TreeNode root, int[] max){
+        if(root == null){
+            return 0;
+        }
+        int lt = getSum(root.left, max);
+        int rt = getSum(root.right, max);
+        
+        // Calculate the maximum path sum for the current node considering left, right, or just the node itself
+        int tempMax = Math.max(root.val, Math.max(root.val + lt, root.val + rt)); // Check if the right path, left path, or node itself is the greatest path
+        
+        // Update the global maximum path sum by considering the current node
+        max[0] = Math.max(Math.max(root.val + rt + lt, tempMax), max[0]); // Check if this root node creates the greatest path
+        
+        // Return the maximum path sum starting from the current node (excluding the root itself)
+        return tempMax;
+    }
+    
+    public int maxPathSum(TreeNode root) {
+        int[] max = new int[]{Integer.MIN_VALUE};
+        return Math.max(getSum(root, max), max[0]);
+    }
+}

@@ -1,0 +1,122 @@
+----- TC:- O(2logn) ~ O(logn), SC:- O(logn) for stack space -----
+
+    public int pivot(int[] nums, int left, int right){
+        if(left >= right){
+            return -1;
+        }
+        int mid = (left + right) / 2;
+        if(nums[mid] > nums[mid + 1]){
+            return mid + 1;
+        }
+        if(nums[left] < nums[mid] && nums[left] > nums[right]){
+            return pivot(nums, mid, right);
+        }
+        else if(nums[left] > nums[mid] && nums[left] > nums[right]){
+            return pivot(nums, left, mid);
+        }
+        return -1;
+    }
+    public int binSearch(int[] nums, int key, int left, int right){
+        if(left > right){
+            return -1;
+        }
+        int mid = (left + right) / 2;
+        if(nums[mid] == key){
+            return mid;
+        }
+        if(nums[mid] > key){
+            return binSearch(nums, key, left, mid - 1);
+        }
+        else {
+            return binSearch(nums, key, mid + 1, right);
+        }
+    }
+    public int search(int[] nums, int target) {
+        int piv = pivot(nums, 0, nums.length - 1);
+        if(piv == -1){
+            return binSearch(nums, target, 0, nums.length - 1);
+        }
+        else{
+            if(nums[0] <= target){
+                return binSearch(nums, target, 0, piv - 1);
+            }
+            else{
+                return binSearch(nums, target, piv, nums.length - 1);
+            }
+        }
+    }
+}
+
+----- TC:- O(2logn) ~ O(logn), SC:- O(1) -----
+
+class Solution {
+    private int findPivot(int[] nums) {
+        int low = 0, high = nums.length - 1, pivot = -1;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (mid < nums.length - 1 && nums[mid + 1] < nums[mid]) {
+                pivot = mid;
+                break;
+            } else if (nums[mid] < nums[low]) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return pivot;
+    }
+
+    private int binarySearch(int[] nums, int low, int high, int tgt) {
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (nums[mid] == tgt) {
+                return mid;
+            }
+            if (nums[mid] < tgt) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return -1;
+    }
+
+    public int search(int[] nums, int target) {
+        int pivot = findPivot(nums);
+        if (pivot == -1) {
+            return binarySearch(nums, 0, nums.length - 1, target);
+        }
+        if (target < nums[0]) {
+            return binarySearch(nums, pivot + 1, nums.length - 1, target);
+        }
+        return binarySearch(nums, 0, pivot, target);
+    }
+}
+
+----- TC:- O(logn), SC:- O(1) [Striver: https://youtu.be/5qGrJbHhqFs] -----
+
+class Solution {
+    public int search(int[] nums, int target) {
+        int low = 0, high = nums.length - 1, ans = -1;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            }
+            if (nums[mid] >= nums[low]) {
+                if (target < nums[mid] && target >= nums[low]) {
+                    high = mid - 1;
+                } else {
+                    low = mid + 1;
+                }
+            } else {
+                if (target > nums[mid] && target <= nums[high]) {
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
+            }
+        }
+        return ans;
+    }
+}

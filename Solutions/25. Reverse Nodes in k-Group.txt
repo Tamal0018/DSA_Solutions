@@ -1,0 +1,79 @@
+------- My solution, TC:- O(2*n) for findLast() & reverseList() ~= O(n), SC:- O(1) -------
+
+class Solution {
+    private ListNode findLast(ListNode head, int k) {
+        for (int i = 1; i < k; i++) {
+            if (head != null) {
+                head = head.next;
+            } else {
+                break;
+            }
+        }
+        return head;
+    }
+
+    private ListNode reverseList(ListNode head, ListNode last) {
+        ListNode temp = head, prev = last.next, next;
+        ListNode checkLast = prev;
+        while (temp != checkLast) {
+            next = temp.next;
+            temp.next = prev;
+            prev = temp;
+            temp = next;
+        }
+        return last;
+    }
+
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode dummy = new ListNode(0, head);
+        ListNode temp = dummy;
+        while (temp != null) {
+            ListNode last = findLast(temp.next, k);
+            if (last != null) {
+                ListNode nxt = temp.next;
+                temp.next = reverseList(temp.next, last);
+                temp = nxt;
+            } else {
+                temp = last;
+            }
+        }
+        return dummy.next;
+    }
+}
+
+------- My solution, TC:- O(2*n) for getLen() & reverse() ~= O(n), SC:- O(1) -------
+
+class Solution {
+    private int getLen(ListNode head) {
+        int len = 0;
+        while (head != null) {
+            len++;
+            head = head.next;
+        }
+        return len;
+    }
+
+    private ListNode reverse(ListNode head, int k) {
+        ListNode nxt = null, temp = head, prev = null;
+        while (k > 0) {
+            nxt = temp.next;
+            temp.next = prev;
+            prev = temp;
+            temp = nxt;
+            k--;
+        }
+        head.next = nxt;
+        return prev;
+    }
+
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode dummy = new ListNode(0, head), temp = dummy, nxt = head;
+        int len = getLen(head);
+        for (int i = k; i <= len; i += k) {
+            nxt = temp.next;
+            temp.next = reverse(temp.next, k);
+            temp = nxt;
+        }
+        return dummy.next;
+    }
+}

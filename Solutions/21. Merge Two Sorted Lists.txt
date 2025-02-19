@@ -1,0 +1,71 @@
+----- My solution, TC:- O(n), SC:- O(1) -----
+
+class Solution {
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        if (list1 == null || list2 == null) {
+            return (list1 == null) ? list2 : list1;
+        }
+        ListNode prev = null, head = list1;
+        while (list1 != null && list2 != null) {
+            if (list1.val < list2.val) {
+                prev = list1;
+                list1 = list1.next;
+            } else {
+                ListNode temp = list2;
+                if (prev != null) {
+                    prev.next = temp;
+                } else {
+                    head = list2;
+                }
+                list2 = list2.next;
+                temp.next = list1;
+                prev = temp;
+            }
+        }
+        if (list1 == null) {
+            prev.next = list2;
+        } else if (list2 == null) {
+            prev.next = list1;
+        }
+        return head;
+    }
+}
+
+----- Same approach, TC:- O(n), SC:- O(1) -----
+
+class Solution {
+    private ListNode insert(ListNode prev, ListNode list2) {
+        ListNode node = list2.next;
+        list2.next = prev.next;
+        prev.next = list2;
+        return node;
+    }
+
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        if (list1 == null) {
+            return list2;
+        }
+        if (list2 == null) {
+            return list1;
+        }
+        if (list2.val < list1.val) {
+            ListNode temp = list2;
+            list2 = list1;
+            list1 = temp;
+        }
+        ListNode ans = list1, prev = null;
+        while (list1 != null && list2 != null) {
+            if (list1.val > list2.val) {
+                list2 = insert(prev, list2);
+                list1 = prev.next;
+                continue;
+            }
+            prev = list1;
+            list1 = list1.next;
+        }
+        if(list2 != null){
+            prev.next = list2;
+        }
+        return ans;
+    }
+}

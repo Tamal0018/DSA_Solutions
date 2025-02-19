@@ -1,0 +1,68 @@
+Reference: https://www.youtube.com/watch?v=ttVu6G7Ayik&list=PLgUwDviBIf0pOd5zvVVSzgpo6BaCpHT9c&index=13&t=319s
+----- Using largest rectangle problem, TC:- O(n*m) for prefix sum + O(n*2m) for largestRectangle, SC:- O(n*m) for prefix sum + O(m) for stack -----
+
+class Solution {
+    private int largestRectangle(int[][] heights, int row) {
+        int result = 0;
+        Deque<Integer> stack = new ArrayDeque<>();
+        for (int i = 0; i <= heights[row].length; i++) {
+            while (!stack.isEmpty() && (i == heights[row].length || heights[row][stack.peek()] >= heights[row][i])) {
+                int idx = stack.pop();
+                int pse = stack.isEmpty() ? -1 : stack.peek();
+                int area = (i - pse - 1) * heights[row][idx];
+                result = Math.max(result, area);
+            }
+            stack.push(i);
+        }
+        return result;
+    }
+
+    public int maximalRectangle(char[][] matrix) {
+        int[][] heights = new int[matrix.length][matrix[0].length];
+        int result = 0;
+        for (int col = 0; col < matrix[0].length; col++) { //Prefix sum, pre-computing the heights at each row
+            int sum = 0;
+            for (int row = 0; row < matrix.length; row++) {
+                int num = matrix[row][col] - '0';
+                sum = (num == 0) ? 0 : (sum + num);
+                heights[row][col] = sum;
+            }
+        }
+        for (int row = 0; row < matrix.length; row++) {
+            result = Math.max(result, largestRectangle(heights, row));
+        }
+        return result;
+    }
+}
+
+----- Reduced 2D array to 1D array, TC:- O(n*3m), SC:- O(m) for prefix sum + O(m) for stack -----
+
+class Solution {
+    private int largestRect(int[] arr) {
+        int largest = 0;
+        Deque<Integer> stack = new ArrayDeque<>();
+        for (int i = 0; i <= arr.length; i++) {
+            while (!stack.isEmpty() && (i == arr.length || arr[stack.peek()] >= arr[i])) {
+                int popped = stack.pop();
+                int pse = stack.isEmpty() ? -1 : stack.peek();
+                int area = (i - pse - 1) * arr[popped];
+                largest = Math.max(largest, area);
+            }
+            stack.push(i);
+        }
+        return largest;
+    }
+
+    public int maximalRectangle(char[][] matrix) {
+        int[] arr = new int[matrix[0].length]; // Stores heights for the current row
+        int max = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                arr[j] = (matrix[i][j] == '0') ? 0 : arr[j] + 1;
+            }
+            // Calculate the largest rectangle for the current row
+            max = Math.max(largestRect(arr), max);
+        }
+        return max;
+    }
+}

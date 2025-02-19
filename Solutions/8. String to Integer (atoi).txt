@@ -1,0 +1,27 @@
+----- TC:- O(n), SC:- O(1) -----
+
+class Solution {
+    public int myAtoi(String s) {
+        int idx = 0;
+        while (idx < s.length() && s.charAt(idx) == ' ') {
+            idx++;
+        }
+        int sign = 1, ans = 0;
+        if (idx < s.length() && (s.charAt(idx) == '-' || s.charAt(idx) == '+')) {
+            if (s.charAt(idx) == '-') {
+                sign = -1;
+            }
+            idx++;
+        }
+        long curr = 0;
+        while (idx < s.length() && Character.isDigit(s.charAt(idx))) {
+            curr *= 10;
+            curr += s.charAt(idx) - '0';
+            if (curr > Integer.MAX_VALUE) {
+                return (sign == 1) ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+            }
+            idx++;
+        }
+        return (int) curr * sign;
+    }
+}

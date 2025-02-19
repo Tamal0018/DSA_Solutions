@@ -1,0 +1,48 @@
+------ My solution (using global varaible) as Inorder Approach TC:- O(n), SC:- O(h) ------
+
+class Solution {
+    TreeNode prev;
+
+    private boolean check(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        if (!check(root.left)) {
+            return false;
+        }
+        if (prev != null && prev.val >= root.val) {
+            return false;
+        }
+        prev = root;
+        return check(root.right);
+    }
+
+    public boolean isValidBST(TreeNode root) {
+        return check(root);
+    }
+}
+
+------ My solution (without using global varaible) as Inorder Approach TC:- O(n), SC:- O(h) ------
+
+class Solution {
+    private boolean check(TreeNode root, int[] data) {
+        if (root == null) {
+            return true;
+        }
+        if (!check(root.left, data)) {
+            return false;
+        }
+        if (data[0] == 0) {
+            data[0] = 1;
+        } else if (data[1] >= root.val) {
+            return false;
+        }
+        data[1] = root.val;
+        return check(root.right, data);
+    }
+
+    public boolean isValidBST(TreeNode root) {
+        int[] data = new int[]{0, 0};
+        return check(root, data);
+    }
+}

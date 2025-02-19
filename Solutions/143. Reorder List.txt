@@ -1,0 +1,67 @@
+----- Using Map / List, TC:- O(n), SC:- O(n) -----
+
+class Solution {
+    public void reorderList(ListNode head) {
+        ListNode curr = head, prev = null;
+        int max = 0;
+        Map<Integer, ListNode> map = new HashMap<>(); //List can also be used instead of Map
+        while (curr != null) {
+            map.put(max, curr);
+            curr = curr.next;
+            max++;
+        }
+        max--;
+        for (int i = 0; i <= max / 2; i++) {
+            map.get(i).next = map.get(max - i);
+            if (prev != null) {
+                prev.next = map.get(i);
+            }
+            prev = map.get(max - i);
+        }
+        prev.next = null;
+    }
+}
+
+----- Reversing half of the list, TC:- O(n), SC:- O(1) -----
+
+class Solution {
+    private ListNode reverseNodes(ListNode head) {
+        ListNode curr = head, prev = null, next = null;
+        while (curr != null) {
+            next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    private ListNode getMid(ListNode head) {
+        ListNode fast = head, slow = head;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+
+    public void reorderList(ListNode head) {
+        ListNode mid = getMid(head);
+        ListNode tail = reverseNodes(mid);
+
+        ListNode headNext = null, tailPrev = null;
+        while (tail != null) {
+            if (tailPrev != null) {
+                tailPrev.next = head;
+            }
+            tailPrev = tail;
+            if (head == tail) {
+                break;
+            }
+            headNext = head.next;
+            head.next = tail;
+            head = headNext;
+            tail = tail.next;
+        }
+    }
+}

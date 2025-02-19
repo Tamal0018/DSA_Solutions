@@ -1,0 +1,24 @@
+Reference:- https://takeuforward.org/data-structure/longest-consecutive-sequence-in-an-array/
+------- TC:- O(2n) for traversing the array twice ~ O(n), SC:- O(n) -------
+
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        int temp = 0, count = 0;
+        for (int n : nums) {
+            set.add(n);
+        }
+        for (int n : nums) {
+            if (!set.contains(n - 1)) {
+                while (set.contains(n)) {
+                    temp++;
+                    set.remove(n);
+                    n++;
+                }
+            }
+            count = Math.max(temp, count);
+            temp = 0;
+        }
+        return count;
+    }
+}

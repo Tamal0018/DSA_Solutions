@@ -1,0 +1,114 @@
+----- Trie method, TC:- O(m*n) where m = size of strs[0] and n = number of strings in array, SC:- O(m*n) -----
+
+class Solution {
+    class Trie {
+        Trie[] nodes;
+        boolean isEnd;
+        int child;
+
+        Trie() {
+            nodes = new Trie[26];
+            isEnd = false;
+            child = 0;
+        }
+    }
+
+    private void insert(Trie node, String str) {
+        for (int i = 0; i < str.length(); i++) {
+            int ch = str.charAt(i) - 'a';
+            if (node.nodes[ch] == null) {
+                node.nodes[ch] = new Trie();
+                node.child++;
+            }
+            node = node.nodes[ch];
+        }
+        node.isEnd = true;
+    }
+
+    private String check(Trie head, String str) {
+        StringBuilder ans = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            if (head.child == 1 && head.nodes[str.charAt(i) - 'a'] != null) {
+                ans.append(str.charAt(i));
+                head = head.nodes[str.charAt(i) - 'a'];
+                if (head.isEnd) {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+        return ans.toString();
+    }
+
+    public String longestCommonPrefix(String[] strs) {
+        Trie head = new Trie();
+        for (String str : strs) {
+            if (str.length() == 0) {
+                return "";
+            }
+            insert(head, str);
+        }
+        return check(head, strs[0]);
+    }
+}
+
+----- TC:- O(m*n) where m = size of strs[0] and n = number of strings in array, SC:- O(1) -----
+
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        String s = strs[0];
+        if (s.length() == 0) {
+            return s;
+        }
+        int i = 1;
+        for (; i <= s.length(); i++) {
+            for (int j = 0; j < strs.length; j++) {
+                if (strs[j].length() == 0 || strs[j].length() < i) {
+                    return s.substring(0, i - 1);
+                }
+                if (!strs[j].substring(0, i).equals(s.substring(0, i))) {
+                    return s.substring(0, i - 1);
+                }
+            }
+        }
+        return s.substring(0, i - 1);
+    }
+}
+
+----- TC:- O(n*m), SC:- O(1) -----
+
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        String str = strs[0];
+        int idx = str.length();
+        for (int i = 1; i < strs.length; i++) {
+            int j = 0;
+            for (; j < strs[i].length() && j < idx; j++) {
+                if (strs[i].charAt(j) != str.charAt(j)) {
+                    break;
+                }
+            }
+            if (j == 0) {
+                return "";
+            }
+            idx = j;
+        }
+        return strs[0].substring(0, idx);
+    }
+}
+
+----- TC:- O(nlogn), SC:- O(1) -----
+
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        Arrays.sort(strs);
+        int i = 0;
+        for (; i < strs[0].length() && i < strs[strs.length - 1].length(); i++) {
+            if (strs[0].charAt(i) != strs[strs.length - 1].charAt(i)) {
+                break;
+            }
+        }
+        return strs[0].substring(0, i);
+    }
+}

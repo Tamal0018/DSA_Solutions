@@ -1,0 +1,20 @@
+class Solution {
+    private void helper(StringBuilder s, List ans,int open,int close, int n){
+        if(s.length() == (n * 2)){
+            ans.add(String.valueOf(s));
+        }
+        if(open < n){
+            helper(s.append("("), ans, open + 1, close, n);
+            s.deleteCharAt(s.length() - 1);
+        }
+        if(close < open){
+            helper(s.append(")"), ans, open, close + 1, n);
+            s.deleteCharAt(s.length() - 1);
+        }
+    }
+    public List<String> generateParenthesis(int n) {
+        List<String> ans = new ArrayList<>();
+        helper(new StringBuilder(), ans, 0, 0, n);
+        return ans;
+    }
+}

@@ -1,0 +1,82 @@
+------ My iterative solution, TC:- O(n), SC:- O(n) ------
+
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        Deque<TreeNode> q = new ArrayDeque<>();
+        while (true) {
+            if (root != null) {
+                list.add(root.val);
+                q.push(root);
+                root = root.left;
+            } else {
+                if (q.isEmpty()) {
+                    break;
+                } else {
+                    root = q.pop();
+                    root = root.right;
+                }
+            }
+        }
+        return list;
+    }
+}
+
+------ Same solution, TC:- O(n), SC:- O(n) ------
+
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        Deque<TreeNode> q = new ArrayDeque<>();
+        if (root != null) {
+            q.push(root);
+            list.add(root.val);
+        }
+        TreeNode node = root;
+        while (!q.isEmpty()) {
+            if (node != null && node.left != null) {
+                q.push(node.left);
+                list.add(q.peek().val);
+                node = node.left;
+                continue;
+            }
+            node = q.poll();
+            if (node.right != null) {
+                q.push(node.right);
+                list.add(q.peek().val);
+                node = node.right;
+                continue;
+            }
+            node = node.right;
+        }
+        return list;
+    }
+}
+
+------ Morris Traversal, TC:- O(n), SC:- O(1) ------
+
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        while (root != null) {
+            if (root.left == null) {
+                list.add(root.val);
+                root = root.right;
+            } else {
+                TreeNode prev = root.left;
+                while (prev.right != null && prev.right != root) {
+                    prev = prev.right;
+                }
+                if (prev.right == root) {
+                    prev.right = null;
+                    root = root.right;
+                } else {
+                    list.add(root.val);
+                    prev.right = root;
+                    root = root.left;
+                }
+            }
+        }
+        return list;
+    }
+}

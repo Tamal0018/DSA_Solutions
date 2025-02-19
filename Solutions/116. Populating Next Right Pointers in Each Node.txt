@@ -1,0 +1,18 @@
+------ My solution:- TC:- O(n), SC:- O(h) where h = height of tree or O(1) excluding recursion stack ------
+ 
+class Solution {
+    private void connector(Node root) {
+        if (root == null || root.left == null) {
+            return;
+        }
+        root.left.next = root.right;
+        root.right.next = (root.next == null) ? null : root.next.left;
+        connector(root.left);
+        connector(root.right);
+    }
+
+    public Node connect(Node root) {
+        connector(root);
+        return root;
+    }
+}

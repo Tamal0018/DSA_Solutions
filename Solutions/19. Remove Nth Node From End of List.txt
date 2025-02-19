@@ -1,0 +1,43 @@
+----- Two pass, TC:- O(n), SC:- O(1) where n = length of list -----
+
+class Solution {
+    private int getLen(ListNode head) {
+        int len = 0;
+        while (head != null) {
+            len++;
+            head = head.next;
+        }
+        return len;
+    }
+
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        int len = getLen(head);
+        int pos = len - n;
+        ListNode node = new ListNode(0, head), temp = node;
+        for (int i = 0; i < pos; i++) {
+            node = node.next;
+        }
+        if (node != null && node.next != null) {
+            node.next = node.next.next;
+        }
+        return temp.next;
+    }
+}
+
+----- One pass, TC:- O(n), SC:- O(1) where n = length of list -----
+
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(0, head), node = dummy;
+        for (int i = 0; i < n; i++) {
+            node = node.next;
+        }
+        ListNode prev = dummy;
+        while (node.next != null) {
+            node = node.next;
+            prev = prev.next;
+        }
+        prev.next = prev.next.next;
+        return dummy.next;
+    }
+}

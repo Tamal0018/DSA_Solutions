@@ -1,0 +1,69 @@
+----- Recursive using String, TC:- O(n*count.length()), SC:- O(n) as recursive stack space -----
+
+class Solution {
+    private String counter(int n, String count) {
+        if (n == 1) {
+            return "1";
+        }
+        String s = counter(n - 1, count);
+        count = "";
+        for (int i = 0; i < s.length(); i++) {
+            int c = 1;
+            while (i < s.length() - 1 && s.charAt(i) == s.charAt(i + 1)) {
+                c++;
+                i++;
+            }
+            count = count + String.valueOf(c) + String.valueOf(s.charAt(i));
+        }
+        return count;
+    }
+
+    public String countAndSay(int n) {
+        return counter(n, "");
+    }
+}
+
+----- Iterative using String, TC:- O(n*count.length()), SC:- O(1) -----
+
+class Solution {
+    public String countAndSay(int n) {
+        String s = "1";
+        for (int i = 1; i < n; i++) {
+            String temp = "";
+            for (int j = 0, count = 1; j < s.length(); j++) {
+                while (j < s.length() - 1 && s.charAt(j) == s.charAt(j + 1)) {
+                    j++;
+                    count++;
+                }
+                temp += String.valueOf(count) + String.valueOf(s.charAt(j));
+                count = 1;
+            }
+            s = temp;
+            temp = "";
+        }
+        return s;
+    }
+}
+
+----- Iterative using StringBuilder (Optimised), TC:- O(n*count.length()), SC:- O(1) -----
+
+class Solution {
+    public String countAndSay(int n) {
+        StringBuilder s = new StringBuilder("1");
+        for (int i = 1; i < n; i++) {
+            StringBuilder temp = new StringBuilder();
+            for (int j = 0, count = 1; j < s.length(); j++) {
+                while (j < s.length() - 1 && s.charAt(j) == s.charAt(j + 1)) {
+                    j++;
+                    count++;
+                }
+                temp.append(count);
+                temp.append(s.charAt(j));
+                count = 1;
+            }
+            s = temp;
+            temp = new StringBuilder();
+        }
+        return String.valueOf(s);
+    }
+}

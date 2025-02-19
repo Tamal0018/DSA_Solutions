@@ -1,0 +1,118 @@
+----- My approach, TC:- O(2^n * n), SC:- O(2^n * n) where n = length of input array -----
+
+class Solution {
+    private void permute(int[] nums, List ans, ArrayList list, int pos) {
+        if (pos >= nums.length) {
+            ans.add(new ArrayList(list));
+            return;
+        }
+        list.add(nums[pos]);
+        permute(nums, ans, list, pos + 1);
+        list.remove(list.size() - 1);
+        permute(nums, ans, list, pos + 1);
+    }
+
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        permute(nums, ans, new ArrayList<Integer>(), 0);
+        return ans;
+    }
+}
+
+----- Bit Manipulation, TC:- O(2^n * n), SC:- ~O(2^n * n) where n = length of input array -----
+
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        int n = nums.length;
+        int combinations = 1 << n;
+        for (int num = 0; num < combinations; num++) {
+            List<Integer> list = new ArrayList<>();
+            for (int bit = 0; bit < n; bit++) {
+                if ((num & (1 << bit)) != 0) {
+                    list.add(nums[bit]);
+                }
+            }
+            ans.add(list);
+        }
+        return ans;
+    }
+}
+
+Explanation of above bit manipulation approach,
+
+C	Bit-3	2	1
+o   --------------
+m	0 | 0	0	0	->	[]
+b	1 | 0	0	1	->	[1]
+i	2 | 0	1	0	->	[2]
+n	3 |	0	1	1	->	[1, 2]
+a	4 |	1	0	0	->	[3]
+t	5 |	1	0	1	->	[1, 3]
+i	6 |	1	1	0	->	[2, 3]
+n	7 |	1	1	1	->	[1, 2, 3]
+
+
+When num = 0
+num - 000		000		000
+bit - 001		010		100
+& bit ---		---		---
+ans	  000		000		000
+
+list = []
+
+When num = 1
+num - 001		001		001
+bit - 001		010		100
+& bit ---		---		---
+ans	  001		000		000
+
+list = [1]
+
+When num = 2
+num - 010		010		010
+bit - 001		010		100
+& bit ---		---		---
+ans	  000		010		000
+
+list = [2]
+
+When num = 3
+num - 011		011		011
+bit - 001		010		100
+& bit ---		---		---
+ans	  001		010		000
+
+list = [1, 2]
+
+When num = 4
+num - 100		100		100
+bit - 001		010		100
+& bit ---		---		---
+ans	  000		000		100
+
+list = [3]
+
+When num = 5
+num - 101		101		101
+bit - 001		010		100
+& bit ---		---		---
+ans	  001		000		100
+
+list = [1, 3]
+
+When num = 6
+num - 110		110		110
+bit - 001		010		100
+& bit ---		---		---
+ans	  000		010		100
+
+list = [2, 3]
+
+When num = 7
+num - 111		111		111
+bit - 001		010		100
+& bit ---		---		---
+ans	  001		010		100
+
+list = [1, 2, 3]

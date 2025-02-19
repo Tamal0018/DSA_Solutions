@@ -1,0 +1,108 @@
+----- Video reference:- https://www.youtube.com/watch?v=1_5VuquLbXg -----
+----- TC:- O(n^2), SC:- O(1) -----
+
+class Solution {
+    private int[] getMax(int[] height, int idx) {
+        int n = height.length - 1;
+        int leftMax = height[0], rightMax = height[n];
+        for (int i = 0; i < height.length; i++) {
+            if (i < idx) {
+                leftMax = Math.max(leftMax, height[i]);
+            }
+            int j = n - i;
+            if (j > idx) {
+                rightMax = Math.max(rightMax, height[j]);
+            }
+        }
+        return new int[]{leftMax, rightMax};
+    }
+
+    public int trap(int[] height) {
+        int result = 0;
+        for (int i = 0; i < height.length; i++) {
+            int[] max = getMax(height, i);
+            int minHeight = Math.min(max[0], max[1]);
+            if (height[i] < minHeight) {
+                result += minHeight - height[i];
+            }
+        }
+        return result;
+    }
+}
+
+----- Using 2 arrays, TC:- O(2n) ~ O(n), SC:- O(2n) for using two arrays -----
+
+class Solution {
+    private void getMax(int[] height, int[] leftMax, int[] rightMax) {
+        int n = height.length - 1;
+        int leftMaxTemp = height[0], rightMaxTemp = height[n];
+        for (int i = 0; i < height.length; i++) {
+            leftMax[i] = leftMaxTemp = Math.max(leftMaxTemp, height[i]);
+            int j = n - i;
+            rightMax[j] = rightMaxTemp = Math.max(rightMaxTemp, height[j]);
+        }
+    }
+
+    public int trap(int[] height) {
+        int result = 0;
+        int[] leftMax = new int[height.length];
+        int[] rightMax = new int[height.length];
+        getMax(height, leftMax, rightMax);
+        for (int i = 0; i < height.length; i++) {
+            int minHeight = Math.min(leftMax[i], rightMax[i]);
+            if (height[i] < minHeight) {
+                result += minHeight - height[i];
+            }
+        }
+        return result;
+    }
+}
+
+----- Using 1 array, TC:- O(2n) ~ O(n), SC:- O(n) for using one arrays -----
+
+class Solution {
+    private void getMax(int[] height, int[] rightMax) {
+        int n = height.length - 1;
+        int rightMaxTemp = height[n];
+        for (int i = height.length - 1; i >= 0; i--) {
+            rightMax[i] = rightMaxTemp = Math.max(rightMaxTemp, height[i]);
+        }
+    }
+
+    public int trap(int[] height) {
+        int result = 0, leftMax = height[0];
+        int[] rightMax = new int[height.length];
+        getMax(height, rightMax);
+        for (int i = 0; i < height.length; i++) {
+            leftMax = Math.max(leftMax, height[i]);
+            int minHeight = Math.min(leftMax, rightMax[i]);
+            if (height[i] < minHeight) {
+                result += minHeight - height[i];
+            }
+        }
+        return result;
+    }
+}
+
+----- Using two pointers, TC:- O(n), SC:- O(1) -----
+
+class Solution {
+    public int trap(int[] height) {
+        int result = 0, n = height.length - 1;
+        int left = 0, right = n;
+        int leftMax = height[left], rightMax = height[n];
+        while (left != right) {
+            leftMax = Math.max(leftMax, height[left]);
+            rightMax = Math.max(rightMax, height[right]);
+            int minOfMaxHeight = Math.min(leftMax, rightMax);
+            if (height[left] <= height[right]) {
+                result += minOfMaxHeight - height[left];
+                left++;
+            } else {
+                result += minOfMaxHeight - height[right];
+                right--;
+            }
+        }
+        return result;
+    }
+}

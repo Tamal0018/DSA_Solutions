@@ -1,0 +1,149 @@
+Note:- Also check Striver solution (https://takeuforward.org/data-structure/sudoku-solver/), it is similar to the 2nd solution in this page, but he has checked the valid cells through iteration instead of hashing.
+----- My solution, TC:- O(9^81), SC:- O(1) -----
+
+class Solution {
+    // Function to check if a given value can be placed at board[r][c]
+    private boolean check(char value, int r, int c, Set<Character>[] row, Set<Character>[] col, Set<Character>[][] grid) {
+        // Check if the value already exists in the current row or column
+        if (row[r].contains(value) || col[c].contains(value)) {
+            return false;
+        }
+        // Check if the value exists in the corresponding 3x3 grid
+        if (grid[r / 3][c / 3].contains(value)) {
+            return false;
+        }
+        // Return true if value is valid for the current position
+        return true;
+    }
+
+    // Backtracking helper function to solve the Sudoku puzzle
+    private boolean helper(char[][] board, int r, int c, Set<Character>[] row, Set<Character>[] col, Set<Character>[][] grid) {
+        // If we reach the end of the current row (r == 9), move to the next column
+        if (r == 9) {
+            r = 0;
+            c++;
+            // If we've processed all columns (c == 9), the puzzle is solved
+            if (c == 9) {
+                return true;
+            }
+        }
+        // If the current cell is empty ('.'), try placing numbers 1 to 9
+        if (board[r][c] == '.') {
+            for (int val = 1; val <= 9; val++) {
+                char value = Character.forDigit(val, 10);  // Convert int to char (1 -> '1', etc.)
+                // Check if value is valid for board[r][c]
+                if (check(value, r, c, row, col, grid)) {
+                    // Place the value and update the tracking sets (row, col, grid)
+                    board[r][c] = value;
+                    row[r].add(value);
+                    col[c].add(value);
+                    grid[r / 3][c / 3].add(value);
+                    // Recur to solve the next cell
+                    if (helper(board, r + 1, c, row, col, grid)) {
+                        return true;  // If solved, return true
+                    }
+                    // Backtrack if the current path doesn't lead to a solution
+                    board[r][c] = '.';
+                    grid[r / 3][c / 3].remove(value);
+                    row[r].remove(value);
+                    col[c].remove(value);
+                }
+            }
+            return false;  // If no valid number can be placed, return false
+        }
+        // Move to the next cell if the current cell is already filled
+        return helper(board, r + 1, c, row, col, grid);
+    }
+
+    public void solveSudoku(char[][] board) {
+        // Initialize sets to track the filled numbers for rows, columns, and 3x3 grids
+        Set<Character>[] row = new HashSet[9];
+        Set<Character>[] col = new HashSet[9];
+        Set<Character>[][] grid = new HashSet[3][3];
+        
+        // Initialize the sets for rows, columns, and grids
+        for (int i = 0; i < 9; i++) {
+            row[i] = new HashSet<>();
+            col[i] = new HashSet<>();
+            grid[i / 3][i % 3] = new HashSet<>();
+        }
+
+        // Populate the sets with the initial numbers from the board
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                char ch = board[i][j];
+                if (ch != '.') {
+                    row[i].add(ch);
+                    col[j].add(ch);
+                    grid[i / 3][j / 3].add(ch);
+                }
+            }
+        }
+
+        // Call the backtracking helper to solve the Sudoku
+        helper(board, 0, 0, row, col, grid);
+    }
+}
+
+----- Almost same approach (less use of space as avoiding stack space for ch != '.'), TC:- TC:- O(9^81), SC:- O(1) -----
+
+class Solution {
+    private boolean check(char value, int r, int c, Set<Character>[] row, Set<Character>[] col, Set<Character>[][] grid) {
+        if (row[r].contains(value) || col[c].contains(value)) {
+            return false;
+        }
+        if (grid[r / 3][c / 3].contains(value)) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean helper(char[][] board, int r, int c, Set<Character>[] row, Set<Character>[] col, Set<Character>[][] grid) {
+        for (int i = r; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] == '.') {
+                    for (int val = 1; val <= 9; val++) {
+                        char value = Character.forDigit(val, 10);
+                        if (check(value, i, j, row, col, grid)) {
+                            board[i][j] = value;
+                            row[i].add(value);
+                            col[j].add(value);
+                            grid[i / 3][j / 3].add(value);
+                            if (helper(board, i, j, row, col, grid)) {
+                                return true;
+                            }
+                            grid[i / 3][j / 3].remove(value);
+                            row[i].remove(value);
+                            col[j].remove(value);
+                        }
+                    }
+                    board[i][j] = '.';
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void solveSudoku(char[][] board) {
+        Set<Character>[] row = new HashSet[9];
+        Set<Character>[] col = new HashSet[9];
+        Set<Character>[][] grid = new HashSet[3][3];
+        for (int i = 0; i < 9; i++) {
+            row[i] = new HashSet<>();
+            col[i] = new HashSet<>();
+            grid[i / 3][i % 3] = new HashSet<>();
+        }
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                char ch = board[i][j];
+                if (ch != '.') {
+                    row[i].add(ch);
+                    col[j].add(ch);
+                    grid[i / 3][j / 3].add(ch);
+                }
+            }
+        }
+        helper(board, 0, 0, row, col, grid);
+    }
+}

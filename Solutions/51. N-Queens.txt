@@ -1,0 +1,114 @@
+----- TC: Exponential in nature, since we are trying out all ways. To be precise it goes as O(N! * N) nearly, SC: O(N^2) -----
+
+class Solution {
+    private boolean check(int row, int col, char[][] arr) {
+        int r1, r2, c1, c2;
+        r1 = r2 = row;
+        c1 = c2 = col;
+        while (r1 >= 0 && c1 >= 0) {
+            if (arr[r1][c1] == 'Q') {
+                return false;
+            }
+            r1--;
+            c1--;
+        }
+        while (r2 >= 0 && c2 < arr.length) {
+            if (arr[r2][c2] == 'Q') {
+                return false;
+            }
+            r2--;
+            c2++;
+        }
+        return true;
+    }
+
+    private void solver(int row, List<List<String>> ans, char[][] arr, boolean[] col) {
+        if (row >= arr.length) {
+            List<String> list = new ArrayList<>();
+            String s;
+            for (int i = 0; i < arr.length; i++) {
+                s = new String("");
+                for (int j = 0; j < arr[i].length; j++) {
+                    s += (String.valueOf(arr[i][j]));
+                }
+                list.add(s);
+            }
+            ans.add(list);
+            return;
+        }
+        for (int j = 0; j < arr[row].length; j++) {
+            if (!col[j] && check(row, j, arr)) {
+                col[j] = true;
+                arr[row][j] = 'Q';
+                solver(row + 1, ans, arr, col);
+                col[j] = false;
+                arr[row][j] = '.';
+            }
+        }
+    }
+
+    public List<List<String>> solveNQueens(int n) {
+        List<List<String>> ans = new ArrayList<>();
+        char[][] arr = new char[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                arr[i][j] = '.';
+            }
+        }
+        boolean[] col = new boolean[n];
+        solver(0, ans, arr, col);
+        return ans;
+    }
+}
+
+
+----- We can check whether we have any queen in left or right diagonal by memorizing -----
+
+class Solution {
+    private void solver(int row, List<List<String>> ans, char[][] arr, boolean[] col, boolean[] ld, boolean[] rd) {
+        int n = arr.length;
+        if (row == n) {
+            // If we've placed queens in all rows, add the current arrangement to the result
+            List<String> list = new ArrayList<>();
+            String s;
+            for (int i = 0; i < n; i++) {
+                s = new String("");
+                for (int j = 0; j < n; j++) {
+                    s += (String.valueOf(arr[i][j]));
+                }
+                list.add(s);
+            }
+            ans.add(list);
+            return;
+        }
+        for (int j = 0; j < n; j++) {
+            // Check if it's safe to place a queen at the current position
+            if (!col[j] && !ld[row + j] && !rd[(n - 1) + (row - j)]) {
+                col[j] = true;
+                arr[row][j] = 'Q';
+                ld[row + j] = true;          // ld array checks whether we have any queen in the left diagonal side
+                rd[(n - 1) + (row - j)] = true;  // rd array checks whether we have any queen in the right diagonal side
+                solver(row + 1, ans, arr, col, ld, rd);
+                col[j] = false;
+                arr[row][j] = '.';
+                ld[row + j] = false;
+                rd[(n - 1) + (row - j)] = false;
+            }
+        }
+    }
+
+    public List<List<String>> solveNQueens(int n) {
+        List<List<String>> ans = new ArrayList<>();
+        char[][] arr = new char[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                arr[i][j] = '.';
+            }
+        }
+        boolean[] col = new boolean[n];       // Array to keep track of columns with queens
+        boolean[] ld = new boolean[(2 * n) - 1];  // Array to keep track of left diagonals with queens
+        boolean[] rd = new boolean[(2 * n) - 1];  // Array to keep track of right diagonals with queens
+        solver(0, ans, arr, col, ld, rd);
+        return ans;
+    }
+}

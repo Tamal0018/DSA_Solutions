@@ -1,0 +1,54 @@
+------- My solution TC:- O(n), SC:- O(n) for hashmap -------
+-------- Reference:- https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/solution/  &  https://www.youtube.com/watch?v=PoBGyrIWisE --------
+
+class Solution {
+    int index;
+
+    private TreeNode builder(int[] inorder, int[] postorder, HashMap map, int l, int r) {
+        if (l > r) {
+            return null;
+        }
+        index--;
+        TreeNode root = new TreeNode(postorder[index]);
+        int i = (int) map.get(postorder[index]);
+        root.right = builder(inorder, postorder, map, i + 1, r);
+        root.left = builder(inorder, postorder, map, l, i - 1);
+        return root;
+    }
+
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            map.put(inorder[i], i);
+        }
+        TreeNode head;
+        index = postorder.length;
+        head = builder(inorder, postorder, map, 0, inorder.length - 1);
+        return head;
+    }
+}
+
+
+----- Better approach -----
+
+class Solution {
+    private TreeNode builder(int[] in, int[] post, Map map, int[] idx, int start, int end) {
+        if (start > end) {
+            return null;
+        }
+        TreeNode node = new TreeNode(post[idx[0]]);
+        idx[0]--;
+        node.right = builder(in, post, map, idx, (int) map.get(node.val) + 1, end);
+        node.left = builder(in, post, map, idx, start, (int) map.get(node.val) - 1);
+        return node;
+    }
+
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            map.put(inorder[i], i);
+        }
+        int[] idx = new int[]{postorder.length - 1};
+        return builder(inorder, postorder, map, idx, 0, inorder.length - 1);
+    }
+}

@@ -1,0 +1,57 @@
+----- Iterative (Using two stack) TC:- O(n), SC:- O(n) -----
+--- Reference:- https://www.youtube.com/watch?v=2YBhNLodD8Q&list=TLPQMTcwNTIwMjP-86u3ES1CUQ&index=1&pp=gAQBiAQB ---
+
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        Deque<TreeNode> st1 = new ArrayDeque<>();
+        Deque<TreeNode> st2 = new ArrayDeque<>();
+        if (root != null) {
+            st1.push(root);
+        }
+        while (!st1.isEmpty()) {
+            TreeNode node = st1.pop();
+            st2.push(node);
+            if (node.left != null) {
+                st1.push(node.left);
+            }
+            if (node.right != null) {
+                st1.push(node.right);
+            }
+        }
+        while (!st2.isEmpty()) {
+            TreeNode node = st2.pop();
+            list.add(node.val);
+        }
+        return list;
+    }
+}
+
+----- Iterative (Using one stack) TC:- O(n), SC:- O(n) -----
+--- Reference:- https://www.youtube.com/watch?v=NzIGLLwZBS8&list=TLPQMTcwNTIwMjP-86u3ES1CUQ&index=4 ---
+
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        Deque<TreeNode> q = new ArrayDeque<>();
+        if (root != null) {
+            do { /*using do while cause initially stack is empty, we need to run the loop at least once.*/
+                if (root != null) {
+                    q.push(root);
+                    root = root.left;
+                } else {
+                    root = q.peek().right;
+                    if (root == null) {
+                        TreeNode temp = q.pop();
+                        list.add(temp.val);
+                        while (!q.isEmpty() && temp == q.peek().right) {
+                            temp = q.pop();
+                            list.add(temp.val);
+                        }
+                    }
+                }
+            } while (!q.isEmpty());
+        }
+        return list;
+    }
+}

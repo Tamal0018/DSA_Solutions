@@ -1,0 +1,118 @@
+Reference:- https://takeuforward.org/data-structure/merge-two-sorted-arrays-without-extra-space/
+----- TC:- O(m*n), SC:- O(1) -----
+
+class Solution {
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+
+    private void sort(int[] nums, int idx) {
+        while (idx != 0 && nums[idx] < nums[idx - 1]) {
+            swap(nums, idx, idx - 1);
+            idx--;
+        }
+        while (idx != nums.length - 1 && nums[idx] > nums[idx + 1]) {
+            swap(nums, idx, idx + 1);
+            idx++;
+        }
+    }
+
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        if (n == 0) {
+            return;
+        }
+        int i, j = 0;
+        for (i = 0; i < m; i++) {
+            if (j == n) {
+                j = 0;
+            }
+            if (nums1[i] > nums2[j]) {
+                int temp = nums1[i];
+                nums1[i] = nums2[j];
+                nums2[j] = temp;
+                sort(nums2, j);
+            }
+        }
+        for (i = m; i < nums1.length; i++, j++) {
+            if (j == n) {
+                j = 0;
+            }
+            nums1[i] = nums2[j];
+        }
+    }
+}
+
+----- TC:- O(m+n), SC:- O(m+n) for Map data structure -----
+
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        Map<Integer, Integer> map = new TreeMap<>();
+        for (int i = 0; i < m; i++) {
+            int num = nums1[i];
+            if (map.containsKey(num)) {
+                map.put(num, map.get(num) + 1);
+            } else {
+                map.put(num, 1);
+            }
+        }
+        for (int num : nums2) {
+            if (map.containsKey(num)) {
+                map.put(num, map.get(num) + 1);
+            } else {
+                map.put(num, 1);
+            }
+        }
+        int i = 0;
+        for (Map.Entry<Integer, Integer> e : map.entrySet()) {
+            int key = e.getKey();
+            int val = e.getValue();
+            while (val > 0) {
+                nums1[i] = key;
+                i++;
+                val--;
+            }
+        }
+    }
+}
+
+----- Other methods, 1. using extra array with O(m+n) space and time, 2. merge two arrays and sort the final array -----
+
+----- Gap method, TC:- ~O(m+n), SC:- O(1) -----
+
+class Solution {
+    private void swap(int[] nums1, int m, int[] nums2, int n) {
+        int temp = nums1[m];
+        nums1[m] = nums2[n];
+        nums2[n] = temp;
+    }
+
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int gap = (n + m) / 2 + (n + m) % 2;
+        while (gap > 0) {
+            for (int i = 0, j = i + gap; j < m + n; i++, j++) {
+                if (i >= m) {
+                    if (nums2[i - m] > nums2[j - m]) {
+                        swap(nums2, i - m, nums2, j - m);
+                    }
+                } else if (j >= m) {
+                    if (nums1[i] > nums2[j - m]) {
+                        swap(nums1, i, nums2, j - m);
+                    }
+                } else {
+                    if (nums1[i] > nums1[j]) {
+                        swap(nums1, i, nums1, j);
+                    }
+                }
+            }
+            if (gap == 1) {
+                break;
+            }
+            gap = (gap) / 2 + (gap) % 2;
+        }
+        for (int i = m; i < nums1.length; i++) {
+            nums1[i] = nums2[i - m];
+        }
+    }
+}

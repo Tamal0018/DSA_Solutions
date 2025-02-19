@@ -1,0 +1,47 @@
+Refernce:- https://www.youtube.com/watch?v=an9WRz8QhkA&list=PLjkkQ3iH4jy82KRn9jXeFyWzvX7sqYrjE&index=5
+------ TC:- O(logn), SC:- O(logn) for recursive stack call (logn because dividing n by two in every step) ------
+
+class Solution {
+    private double pow(double x, int n) {
+        if (n == 1) {
+            return x;
+        } else if (n == 0) {
+            return (double) 1;
+        }
+        double ans = Math.pow(pow(x, n / 2), 2);
+        return (n % 2 == 0) ? ans : ans * x;
+    }
+
+    public double myPow(double x, int n) {
+        boolean isNeg = false;
+        if (n < 0) {
+            isNeg = true;
+            n = Math.abs(n);
+        }
+        return (isNeg) ? (1 / pow(x, n)) : pow(x, n);
+    }
+}
+
+Reference:- https://takeuforward.org/data-structure/implement-powxn-x-raised-to-the-power-n/
+------ Same approach iterative, TC:- O(logn), SC:- O(1) ------
+
+class Solution {
+    public double myPow(double x, int n) {
+        boolean isNeg = false;
+        double ans = 1;
+        if (n < 0) {
+            isNeg = true;
+            n = Math.abs(n);
+        }
+        while (n > 0) {
+            if (n % 2 == 1) {
+                ans *= x;
+                n--;
+            } else {
+                x *= x;
+                n /= 2;
+            }
+        }
+        return (isNeg) ? (1 / ans) : ans;
+    }
+}

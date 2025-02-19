@@ -1,0 +1,67 @@
+----- Recursive, TC:- O(2^n) & SC:- O(n) for stack space -----
+
+class Solution {
+    private int counter(int steps) {
+        if (steps <= 2){
+            return steps;
+        }
+        return counter(steps - 1) + counter(steps - 2);
+    }
+
+    public int climbStairs(int n) {
+        return counter(n);
+    }
+}
+
+----- Recursive using dp, TC:- O(n) & SC:- O(2n) for dp array and stack space -----
+
+class Solution {
+    private int counter(int steps, int[] dp) {
+        if (steps <= 2) {
+            return dp[steps] = steps;
+        }
+        if (dp[steps] != -1) {
+            return dp[steps];
+        }
+        return dp[steps] = counter(steps - 1, dp) + counter(steps - 2, dp);
+    }
+
+    public int climbStairs(int n) {
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, -1);
+        return counter(n, dp);
+    }
+}
+
+----- Tabulation, TC:- O(n) & SC:- O(n) for dp array -----
+
+class Solution {
+
+    public int climbStairs(int n) {
+        int[] dp = new int[n + 1];
+        dp[1] = 1;
+        dp[2] = 2;
+        for (int i = 3; i <= n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n];
+    }
+}
+
+----- Space optimized, TC:- O(n) & SC:- O(1) -----
+
+class Solution {
+
+    public int climbStairs(int n) {
+        if (n <= 2) {
+            return n;
+        }
+        int curr = 0, prev2 = 1, prev1 = 2;
+        for (int i = 3; i <= n; i++) {
+            curr = prev2 + prev1;
+            prev2 = prev1;
+            prev1 = curr;
+        }
+        return curr;
+    }
+}

@@ -1,0 +1,62 @@
+------- Recursive (TC:- O(n^2), SC:- O(1) excluding stack storage, O(n) including stack) -------
+(Optimized reference:- https://leetcode.com/problems/binary-tree-level-order-traversal/discuss/2759863/2-ways-using-Queue-and-using-BFS(Recursion))
+
+class Solution {
+    private int getHeight(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return Math.max(getHeight(root.left), getHeight(root.right)) + 1;
+    }
+
+    private void levTrav(TreeNode root, int lev, ArrayList list, int curr) {
+        if (root == null) {
+            return;
+        }
+        if (lev == curr) {
+            list.add(root.val);
+            return;
+        }
+        levTrav(root.left, lev, list, curr + 1);
+        levTrav(root.right, lev, list, curr + 1);
+    }
+
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> ans = new ArrayList<>();
+        int height = getHeight(root);
+        for (int i = 1; i <= height; i++) {
+            ArrayList<Integer> list = new ArrayList<>();
+            levTrav(root, i, list, 1);
+            ans.add(list);
+        }
+        return ans;
+    }
+}
+------- Recursive (TC:- O(n), SC:- O(n)) -------
+
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> ans = new ArrayList<>();
+        if(root == null){
+            return ans;
+        }
+        Deque<TreeNode> q = new ArrayDeque<>();
+        q.offer(root);
+        while (!q.isEmpty()) {
+            int size = q.size();
+            List<Integer> list = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode newRoot = q.poll();
+                list.add(newRoot.val);
+                if (newRoot.left != null) {
+                    q.add(newRoot.left);
+                }
+                if (newRoot.right != null) {
+                    q.add(newRoot.right);
+                }
+            }
+            ans.add(list);
+        }
+        return ans;
+    }
+}

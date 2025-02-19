@@ -1,0 +1,58 @@
+Reference :- 1). https://leetcode.com/problems/rotate-image/solution/ 
+	     2). https://takeuforward.org/data-structure/rotate-image-by-90-degree/
+----- TC:- O(n*n + n*n) ~ O(n*n), SC:- O(1) -----
+
+
+class Solution {
+    private void swap(int[][] matrix, int i1, int j1, int i2, int j2) {
+        int temp = matrix[i1][j1];
+        matrix[i1][j1] = matrix[i2][j2];
+        matrix[i2][j2] = temp;
+    }
+
+    public void rotate(int[][] matrix) { //reverse upside down
+        for (int i = 0; i < matrix.length / 2; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                swap(matrix, i, j, matrix.length - i - 1, j);
+            }
+        }
+        for (int i = 0; i < matrix.length; i++) { //transpose (interchanging rows and columns)
+            for (int j = 0; j < i; j++) {
+                swap(matrix, i, j, j, i);
+            }
+        }
+    }
+}
+
+----- Similar approach, reversed left to right instead upside down -----
+
+class Solution {
+    private void swap(int[][] matrix, int i1, int j1, int i2, int j2) {
+        int temp = matrix[i1][j1];
+        matrix[i1][j1] = matrix[i2][j2];
+        matrix[i2][j2] = temp;
+    }
+
+    private void leftRightMirror(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n / 2; j++) {
+                swap(matrix, i, j, i, n - j - 1);
+            }
+        }
+    }
+
+    private void transpose(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n - i; j++) {
+                swap(matrix, i, j, n - 1 - j, n - 1 - i);
+            }
+        }
+    }
+
+    public void rotate(int[][] matrix) {
+        leftRightMirror(matrix);
+        transpose(matrix);
+    }
+}

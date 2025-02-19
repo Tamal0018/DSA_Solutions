@@ -1,0 +1,107 @@
+------ Iterative solution, TC:- O(n), SC:- O(n) ------
+
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        Deque<TreeNode> q = new ArrayDeque<>();
+        while (true) {
+            if (root != null) {
+                q.push(root);
+                root = root.left;
+            } else {
+                if (q.isEmpty()) {
+                    break;
+                } else {
+                    TreeNode node = q.pop();
+                    list.add(node.val);
+                    root = node.right;
+                }
+            }
+        }
+        return list;
+    }
+}
+
+------ (Same solution) Iterative solution, TC:- O(n), SC:- O(n) ------
+
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        Deque<TreeNode> q = new ArrayDeque<>();
+        if (root != null) {
+            q.push(root);
+        }
+        TreeNode node = root;
+        while (!q.isEmpty()) {
+            if (node != null && node.left != null) {
+                q.push(node.left);
+                node = node.left;
+                continue;
+            } else {
+                node = q.pop();
+            }
+            list.add(node.val);
+            if (node.right != null) {
+                q.push(node.right);
+            }
+            node = node.right;
+        }
+        return list;
+    }
+}
+
+------ (Same solution) Iterative solution, TC:- O(n), SC:- O(n) ------
+
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        while(root != null){
+            if(root.left != null){
+                stack.push(root);
+                root = root.left;
+            }
+            else if(root.left == null && root.right != null){
+                list.add(root.val);
+                root = root.right;
+            }
+            else if(root.left == null && root.right == null){
+                list.add(root.val);
+                if(stack.isEmpty()){
+                    break;
+                }
+                root = stack.pop();
+                root.left = null;
+            }
+        }
+        return list;
+    }
+}
+
+------ Morris Traversal, TC:- O(n), SC:- O(1) ------
+
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        while (root != null) {
+            if (root.left == null) {
+                list.add(root.val);
+                root = root.right;
+            } else {
+                TreeNode prev = root.left;
+                while (prev.right != null && prev.right != root) {
+                    prev = prev.right;
+                }
+                if (prev.right == root) {
+                    prev.right = null;
+                    list.add(root.val);
+                    root = root.right;
+                } else {
+                    prev.right = root;
+                    root = root.left;
+                }
+            }
+        }
+        return list;
+    }
+}

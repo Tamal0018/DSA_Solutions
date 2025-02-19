@@ -1,0 +1,64 @@
+----- TC:- O(n^2) as for each n in while loop removing element from nums which takes O(n) time, SC:- O(n) for ans and nums
+
+class Solution {
+    public String getPermutation(int n, int k) {
+        StringBuilder ans = new StringBuilder();
+        List<Integer> nums = new ArrayList<>();
+        int fact = 1;
+
+        // Create a list of numbers from 1 to n
+        for (int i = 1; i <= n; i++) {
+            nums.add(i);
+            fact *= i; // Calculate the factorial of n
+        }
+
+        while (n > 0) {
+            fact /= n; // Calculate (n-1) factorial
+            int idx = (k - 1) / fact; // Find the index for the current digit (0-based)
+
+            // Append the corresponding digit to the result
+            ans.append(nums.get(idx));
+
+            // Remove the used digit from the list
+            nums.remove(idx);
+
+            // Update k by subtracting the contribution of the current digit
+            k -= idx * fact;
+
+            // Decrease n as we've determined one digit
+            n--;
+        }
+
+        return ans.toString();
+    }
+}
+
+----- Similar to previous solution -----
+
+class Solution {
+    public String getPermutation(int n, int k) {
+        ArrayList<Integer> list = new ArrayList<>();
+        int fact = 1;
+        for (int i = 1; i <= n; i++) {
+            list.add(i);
+            if (i != n) {
+                fact *= i;
+            }
+        }
+        String permutation = "";
+        k--;
+        while (k != 0) {
+            permutation += String.valueOf(list.get(k / fact));
+            list.remove(k / fact);
+            k %= fact;
+            fact /= n - 1;
+            n--;
+        }
+        if (list.size() != 0) {
+            for (int i = 0; i < list.size(); i++) {
+                permutation += String.valueOf(list.get(i));
+            }
+        }
+        return permutation;
+    }
+}

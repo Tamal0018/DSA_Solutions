@@ -1,0 +1,100 @@
+-------- Without DP, TC:- , SC:- O(sizeOf List<String> wordDict + n) where n for recursive call, Time Limit Exceeded --------
+
+class Solution {
+    private boolean check(String s, Set set) {
+        if (s.length() != 0) {
+            for (int i = 1; i <= s.length(); i++) {
+                if (set.contains(s.substring(0, i))) {
+                    if (check(s.substring(i, s.length()), set)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> set = new HashSet<>();
+        for (String str : wordDict) {
+            set.add(str);
+        }
+        for (int i = 1; i <= s.length(); i++) {
+            if (set.contains(s.substring(0, i))) {
+                if (check(s.substring(i, s.length()), set)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+
+-------- With DP (Using dp HashMap), TC:- O(n), SC:- O(sizeOf List<String> wordDict + n) ~ O(n) --------
+
+class Solution {
+    private boolean check(String s, Set set, Map<String, Boolean> map) {
+        if (s.length() != 0) {
+            if (map.containsKey(s)) {
+                return map.get(s);
+            }
+            for (int i = 1; i <= s.length(); i++) {
+                if (set.contains(s.substring(0, i))) {
+                    if (check(s.substring(i, s.length()), set, map)) {
+                        map.put(s.substring(i, s.length()), true);
+                        return true;
+                    }
+                }
+            }
+            map.put(s, false);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> set = new HashSet<>();
+        Map<String, Boolean> map = new HashMap<>();
+        for (String str : wordDict) {
+            set.add(str);
+        }
+        if (check(s, set, map)) {
+            return true;
+        }
+        return false;
+    }
+}
+
+-------- Using dp array -------- 
+
+class Solution {
+    private int check(String s, Set set, int idx, int[] dp) {
+        if (idx != s.length()) {
+            if (dp[idx] != 0) {
+                return dp[idx];
+            }
+            for (int i = 1; idx + i <= s.length(); i++) {
+                if (set.contains(s.substring(idx, idx + i))) {
+                    if (check(s, set, idx + i, dp) == 1) {
+                        return dp[idx] = 1;
+                    }
+                }
+            }
+            return dp[idx] = -1;
+        }
+        return 1;
+    }
+
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> set = new HashSet<>();
+        int[] dp = new int[s.length()];
+        for (String str : wordDict) {
+            set.add(str);
+        }
+        if (check(s, set, 0, dp) == 1) {
+            return true;
+        }
+        return false;
+    }
+}}

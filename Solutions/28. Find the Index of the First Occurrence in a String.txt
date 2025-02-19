@@ -1,0 +1,23 @@
+------ TC:- O((n-m)*(m)) ~ O(n*m) where n = haystack.length() and m = needle.length(), SC:- O(1) ------
+
+class Solution {
+    private boolean check(String haystack, String needle, int idx) {
+        for (int i = 0; i < needle.length(); i++) {
+            if (haystack.charAt(idx + i) != needle.charAt(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int strStr(String haystack, String needle) {
+        for (int i = 0; i <= haystack.length() - needle.length(); i++) {
+            if (haystack.charAt(i) == needle.charAt(0)) {
+                if (check(haystack, needle, i)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+}

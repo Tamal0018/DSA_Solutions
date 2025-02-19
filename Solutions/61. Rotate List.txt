@@ -1,0 +1,32 @@
+------- TC:- O(n+(k % length of list)) ~ O(n), SC:- O(1) -------
+
+class Solution {
+    private int getLength(ListNode head) {
+        ListNode temp = head;
+        int len = 0;
+        while (temp != null) {
+            len++;
+            if (temp.next == null) {
+                temp.next = head;
+                break;
+            }
+            temp = temp.next;
+        }
+        return len;
+    }
+
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null || head.next == null || k == 0) {
+            return head;
+        }
+        int length = getLength(head);
+        k = (k % length);
+        ListNode temp = head;
+        for (int i = 1; i < length - k; i++) {
+            temp = temp.next;
+        }
+        head = temp.next;
+        temp.next = null;
+        return head;
+    }
+}

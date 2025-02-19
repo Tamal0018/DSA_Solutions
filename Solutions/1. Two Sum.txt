@@ -1,0 +1,37 @@
+Brute force reference:- https://takeuforward.org/data-structure/two-sum-check-if-a-pair-with-given-sum-exists-in-array/
+
+----- TC:- O(n), SC:- O(n) for HashMap -----
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (map.containsKey(target - nums[i])) {
+                return new int[]{(int) map.get(target - nums[i]), i};
+            }
+            map.put(nums[i], i);
+        }
+        return new int[]{0, 0};
+    }
+}
+
+----- TC:- O(nlogn + n), SC:- O(1) -----
+Note: This solution does not work when we need to return indices as result because sorting the array will distort the indices.
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Arrays.sort(nums);
+        for (int i = 0, j = nums.length - 1; i < j; ) {
+            int sum = nums[i] + nums[j];
+            if (target == sum) {
+                return new int[]{i, j};
+            }
+            if (target > sum) {
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return new int[]{};
+    }
+}

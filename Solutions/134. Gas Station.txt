@@ -1,0 +1,61 @@
+--- TC:-O(n^2) theoretically, actually O(n), SC:- O(1), almost all test cases passed, but time limit exceeded ---
+
+class Solution {
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        if (gas.length == 1) {
+            return (gas[0] - cost[0] < 0) ? -1 : 0;
+        }
+        for (int i = 0; i < gas.length; i++) {
+            int gasTank = gas[i];
+            int k = i + 1;
+            for (int j = 0; j < gas.length - 1; j++) {
+                if (gasTank - cost[k - 1] < 0) {
+                    break;
+                } else {
+                    gasTank = gasTank - cost[k - 1];
+                    if (k == gas.length) {
+                        k = 0;
+                    }
+                    gasTank += gas[k];
+                    if (gasTank - cost[k] < 0) {
+                        k = -1;
+                        break;
+                    }
+                    k++;
+                }
+            }
+            if (k == i || (k >= gas.length && k - gas.length == i)) {
+                return (k >= gas.length) ? k - gas.length : k;
+            }
+        }
+        return -1;
+    }
+}
+
+--------- TC:-O(n), SC:- O(1) ---------
+--------- Reference:- https://www.youtube.com/watch?v=lJwbPZGo05A ---------
+
+class Solution {
+    private int sum(int[] nums) {
+        int ans = 0;
+        for (int n : nums) {
+            ans += n;
+        }
+        return ans;
+    }
+
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        if (sum(gas) < sum(cost)) {
+            return -1;
+        }
+        int ans = 0, gasTank = 0;
+        for (int i = 0; i < gas.length; i++) {
+            gasTank += (gas[i] - cost[i]);
+            if (gasTank < 0) {
+                ans = i + 1;
+                gasTank = 0;
+            }
+        }
+        return ans;
+    }
+}

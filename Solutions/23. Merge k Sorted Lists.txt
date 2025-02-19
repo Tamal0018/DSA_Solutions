@@ -1,0 +1,81 @@
+Reference: https://takeuforward.org/linked-list/merge-k-sorted-linked-lists
+----- Brute force using array sorting, TC:- O(nlogn), SC:- O(n) where n = number of nodes -----
+
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        List<Integer> list = new ArrayList<>();
+        for (ListNode head : lists) {
+            while (head != null) {
+                list.add(head.val);
+                head = head.next;
+            }
+        }
+        Collections.sort(list);
+        ListNode dummy = new ListNode(0), prev = dummy;
+        for (int i = 0; i < list.size(); i++) {
+            ListNode newNode = new ListNode(list.get(i));
+            prev.next = newNode;
+            prev = newNode;
+        }
+        return dummy.next;
+    }
+}
+
+----- Merging two lists at a time, TC:- O(n*n), SC:- O(1) where n = number of nodes -----
+
+class Solution {
+    private void merge(ListNode node1, ListNode node2) {
+        while (node1.next != null && node2 != null) {
+            if (node1.next.val > node2.val) {
+                ListNode temp = node1.next;
+                node1.next = node2;
+                node2 = node2.next;
+                node1.next.next = temp;
+            }
+            node1 = node1.next;
+        }
+        if (node2 != null) {
+            node1.next = node2;
+        }
+    }
+
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists.length == 0) {
+            return null;
+        }
+        ListNode dummy = new ListNode(0);
+        dummy.next = lists[0];
+        for (int i = 1; i < lists.length; i++) {
+            merge(dummy, lists[i]);
+        }
+        return dummy.next;
+    }
+}
+
+----- Optimal approach using Priority Queue, TC:- O(n * klogk), SC:- O(n) where n = number of nodes -----
+Reference: https://www.geeksforgeeks.org/merge-k-sorted-linked-lists-set-2-using-min-heap/
+
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists.length == 0) {
+            return null;
+        }
+        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);
+        ListNode dummy = new ListNode(0), curr = dummy;
+        dummy.next = lists[0];
+        for (int i = 0; i < lists.length; i++) {
+            if (lists[i] != null) {
+                pq.offer(lists[i]);
+            }
+        }
+        while (!pq.isEmpty()) {
+            ListNode temp = pq.poll();
+            curr.next = temp;
+            if (temp.next != null) {
+                pq.offer(temp.next);
+            }
+            curr = curr.next;
+        }
+        return dummy.next;
+    }
+}

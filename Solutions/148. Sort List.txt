@@ -1,0 +1,69 @@
+------------ Reference:- https://leetcode.com/problems/sort-list/solution/ ------------ 
+------------ Top down approach --> TC:- O(nlogn), SC:- O(logn) ------------ 
+
+class Solution {
+    private ListNode findMid(ListNode head) {
+        ListNode fast = head, slow = head, prev = head;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            prev = slow;
+            slow = slow.next;
+        }
+        prev.next = null;
+        return slow;
+    }
+
+    private ListNode merge(ListNode l, ListNode r) {
+        ListNode merged = new ListNode();
+        ListNode temp = merged;
+        while (l != null && r != null) {
+            if (l.val < r.val) {
+                temp.next = l; //not temp = l, temp.next = l
+                l = l.next;
+                temp = temp.next;
+            } else {
+                temp.next = r;
+                r = r.next;
+                temp = temp.next;
+            }
+        }
+        temp.next = (l != null) ? l : r;
+        return merged.next; //not returning merge, but merge.next
+    }
+
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode mid = findMid(head);
+        ListNode left = sortList(head);
+        ListNode right = sortList(mid);
+        return merge(left, right);
+    }
+}
+
+----- Same aprroach, alternative merge method -----
+private ListNode merge(ListNode l, ListNode r) {
+        ListNode merged;
+        if (l.val < r.val) {
+            merged = l;
+            l = l.next;
+        } else {
+            merged = r;
+            r = r.next;
+        }
+        ListNode temp = merged;
+        while (l != null && r != null) {
+            if (l.val < r.val) {
+                temp.next = l;
+                l = l.next;
+                temp = temp.next;
+            } else {
+                temp.next = r;
+                r = r.next;
+                temp = temp.next;
+            }
+        }
+        temp.next = (l != null) ? l : r;
+        return merged;
+    } 

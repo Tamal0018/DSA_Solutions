@@ -1,0 +1,43 @@
+------- TC:- O(n), SC:- O(1) -------
+
+class Solution {
+    public int maxSubArray(int[] a) {
+        int curr = a[0];
+        int sum = a[0];
+        for(int i = 1; i < a.length; i++){
+            curr = Math.max(a[i], a[i] + curr);
+            sum = Math.max(sum, curr);
+        }
+        return sum;
+    }
+}
+
+------- Same approach -------
+
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int max = Integer.MIN_VALUE, temp = 0;
+        for (int n : nums) {
+            temp = Math.max(temp + n, n);
+            max = Math.max(max, temp);
+        }
+        return max;
+    }
+}
+
+------- Same approach, but better to explain -------
+
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int maxSum = nums[0], tempSum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int n = nums[i];
+            tempSum += n;
+            maxSum = Math.max(tempSum, maxSum);
+            if (tempSum < 0) {
+                tempSum = 0; //If tempSum is negative, it can never help to create maxSum.
+            }
+        }
+        return maxSum;
+    }
+}

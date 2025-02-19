@@ -1,0 +1,26 @@
+-------- Without DP, TC:- O(n^2), SC:- O(n) for recursive stack --------
+
+class Solution {
+
+    private int decode(String s, int start, int end) {
+        if (s.substring(start, end).length() >= 3 || s.charAt(start) == '0' || Integer.parseInt(s.substring(start, end)) > 26) {
+            return 0;
+        }
+        if (s.length() == end) {
+            return 1;
+        }
+        int count = 0;
+        for (int i = end + 1; i <= s.length(); i++) {
+            count += decode(s, end, i);
+        }
+        return count;
+    }
+
+    public int numDecodings(String s) {
+        int count = 0;
+        for (int i = 1; i <= s.length(); i++) {
+            count += decode(s, 0, i);
+        }
+        return count;
+    }
+}

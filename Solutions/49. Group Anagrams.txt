@@ -1,0 +1,66 @@
+----- TC:- O(n * klogk), SC:- O(n) where n = number of strings in strs and k = average length of strings -----
+
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for(String s: strs){
+            char[] c = s.toCharArray();
+            Arrays.sort(c); // Sort characters in the string
+            String key = String.valueOf(c); // Use sorted string as a key
+            if(map.containsKey(key)){
+                map.get(key).add(s);
+            }else{
+                map.put(key, new ArrayList());
+                map.get(key).add(s);
+            }
+        }
+		/*
+		//We can use this snippet too
+		for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+            ans.add(entry.getValue());
+        }
+		return ans;
+		*/
+        return new ArrayList<>(map.values());
+    }
+}
+
+----- TC:- O(n * k), SC:- O(n) where n = number of strings in strs and k = average length of strings -----
+
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        // Initialize the result list
+        List<List<String>> ans = new ArrayList<>();
+        // Use a map to group anagrams. Key is the frequency map of characters, value is a list of strings (anagrams)
+        Map<Map<Character, Integer>, List<String>> map = new HashMap<>();
+
+        // Iterate over each string in the input array
+        for (String s : strs) {
+            // Create a frequency map for the current string
+            Map<Character, Integer> freq = new HashMap<>();
+            for (char ch : s.toCharArray()) { // Use enhanced for loop for clarity
+                // Update the frequency of the current character
+                freq.put(ch, freq.getOrDefault(ch, 0) + 1);
+            }
+
+            // If the frequency map is already a key in the main map, add the string to its list
+            if (map.containsKey(freq)) {
+                map.get(freq).add(s);
+            } else {
+                // Otherwise, create a new list for this frequency map and add the string to it
+                List<String> list = new ArrayList<>();
+                list.add(s);
+                map.put(freq, list);
+            }
+        }
+		/*
+		for (Map.Entry<Map<Character, Integer>, List<String>> entry : map.entrySet()) {
+            ans.add(entry.getValue());
+        }
+		*/
+        // Add all grouped anagrams to the result list
+        ans.addAll(map.values()); // Directly add all values instead of iterating with entrySet
+
+        return ans;
+    }
+}

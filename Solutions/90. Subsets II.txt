@@ -1,0 +1,69 @@
+----- TC:- O(2^n * k), SC:- O(k * x), where k = avg length of every combination and x = number of combinations. But using set increases TC -----
+
+class Solution {
+    // Helper function to generate subsets
+    public void helper(Set<List<Integer>> set, List<Integer> list, int[] nums, int pos) {
+        // Base case: If we've reached the end of the array, add the current list to the set
+        if (pos == nums.length) {
+            set.add(new ArrayList<>(list));
+            return;
+        }
+        
+        // Include the current element in the subset
+        list.add(nums[pos]);
+        // Recursively generate subsets with the current element included
+        helper(set, list, nums, pos + 1);
+        // Exclude the current element from the subset
+        list.remove(list.size() - 1);
+        // Recursively generate subsets with the current element excluded
+        helper(set, list, nums, pos + 1);
+    }
+
+    // Main function to find subsets with duplicates
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        // Create a list to track the current subset being generated
+        List<Integer> list = new ArrayList<>();
+        // Create a set to store unique subsets
+        Set<List<Integer>> set = new HashSet<>();
+        // Sort the input array to handle duplicates efficiently
+        Arrays.sort(nums);
+        // Start generating subsets from position 0
+        helper(set, list, nums, 0);
+        // Convert the set of subsets to a list and return it
+        return new ArrayList<>(set);
+    }
+}
+
+/*
+   Time Complexity: O(2^n) in the worst case, where n is the length of the input array. 
+   The code generates all possible subsets of the input array, which is an exponential process.
+
+   Space Complexity: O(n) for the call stack space due to recursion. 
+   The space complexity for storing subsets depends on the number of unique subsets generated, 
+   which can be up to O(2^n) in the worst case.
+*/
+
+
+----- Same appoach without using set -----
+
+class Solution {
+    public void helper(List<List<Integer>> ans, List<Integer> list, int[] nums, int pos) {
+        ans.add(new ArrayList<>(list));
+        for (int i = pos; i < nums.length; i++) {
+            if (i > pos && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            list.add(nums[i]);
+            helper(ans, list, nums, i + 1);
+            list.remove(list.size() - 1);
+        }
+    }
+
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        List<Integer> list = new ArrayList<>();
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(nums);
+        helper(ans, list, nums, 0);
+        return ans;
+    }
+}

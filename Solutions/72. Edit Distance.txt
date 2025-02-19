@@ -1,0 +1,112 @@
+----- Recursive, TC:- O(3^(min(m,n))) & SC:- O(m+n) for stack space -----
+
+class Solution {
+    private int helper(String word1, String word2, int i, int j) {
+        if (j < 0) {
+            return i + 1; // Delete rest of the elements from word1
+        }
+        if (i < 0) {
+            return j + 1; // Insert rest of the elements to word1
+        }
+        if (word1.charAt(i) == word2.charAt(j)) {
+            return helper(word1, word2, i - 1, j - 1);
+        }
+        int notMatch = (int) Math.pow(10, 9);
+        notMatch = Math.min(notMatch, helper(word1, word2, i, j - 1) + 1); //Insert
+        notMatch = Math.min(notMatch, helper(word1, word2, i - 1, j) + 1); //Delete
+        notMatch = Math.min(notMatch, helper(word1, word2, i - 1, j - 1) + 1); //Replace
+        return notMatch;
+    }
+
+    public int minDistance(String word1, String word2) {
+        return helper(word1, word2, word1.length() - 1, word2.length() - 1);
+    }
+}
+
+----- Recursive using dp, TC:- O(m*n) & SC:- O(m+n) + O(m*n) for stack space and dp array -----
+
+class Solution {
+    private int helper(String word1, String word2, int i, int j, int[][] dp) {
+        if (j < 0) {
+            return i + 1;
+        }
+        if (i < 0) {
+            return j + 1;
+        }
+        if (dp[i][j] != -1) {
+            return dp[i][j];
+        }
+        if (word1.charAt(i) == word2.charAt(j)) {
+            return dp[i][j] = helper(word1, word2, i - 1, j - 1, dp);
+        }
+        int notMatch = (int) Math.pow(10, 9);
+        notMatch = Math.min(notMatch, helper(word1, word2, i, j - 1, dp) + 1); //Insert
+        notMatch = Math.min(notMatch, helper(word1, word2, i - 1, j, dp) + 1); //Delete
+        notMatch = Math.min(notMatch, helper(word1, word2, i - 1, j - 1, dp) + 1); //Replace
+        return dp[i][j] = notMatch;
+    }
+
+    public int minDistance(String word1, String word2) {
+        int[][] dp = new int[word1.length()][word2.length()];
+        for (int[] a : dp) {
+            Arrays.fill(a, -1);
+        }
+        return helper(word1, word2, word1.length() - 1, word2.length() - 1, dp);
+    }
+}
+
+----- Tabulation, TC:- O(m*n) & SC:- O(m*n) for dp array -----
+
+class Solution {
+    public int minDistance(String word1, String word2) {
+        int[][] dp = new int[word1.length() + 1][word2.length() + 1];
+        for (int i = 0; i <= word1.length(); i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= word2.length(); j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i <= word1.length(); i++) {
+            for (int j = 1; j <= word2.length(); j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    int notMatch = (int) Math.pow(10, 9);
+                    notMatch = Math.min(notMatch, dp[i][j - 1] + 1); //Insert
+                    notMatch = Math.min(notMatch, dp[i - 1][j] + 1); //Delete
+                    notMatch = Math.min(notMatch, dp[i - 1][j - 1] + 1); //Replace
+                    dp[i][j] = notMatch;
+                }
+            }
+        }
+        return dp[word1.length()][word2.length()];
+    }
+}
+
+----- Space optimization, TC:- O(m*n) & SC:- O(n) -----
+
+class Solution {
+    public int minDistance(String word1, String word2) {
+        int[] prev = new int[word2.length() + 1];
+        for (int j = 0; j <= word2.length(); j++) {
+            prev[j] = j;
+        }
+        for (int i = 1; i <= word1.length(); i++) {
+		int[] curr = new int[word2.length() + 1];
+		curr[0] = i;
+            for (int j = 1; j <= word2.length(); j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    curr[j] = prev[j - 1];
+                } else {
+                    int notMatch = (int) Math.pow(10, 9);
+                    notMatch = Math.min(notMatch, curr[j - 1] + 1); //Insert
+                    notMatch = Math.min(notMatch, prev[j] + 1); //Delete
+                    notMatch = Math.min(notMatch, prev[j - 1] + 1); //Replace
+                    curr[j] = notMatch;
+                }
+            }
+			prev = curr;
+        }
+        return prev[word2.length()];
+    }
+}

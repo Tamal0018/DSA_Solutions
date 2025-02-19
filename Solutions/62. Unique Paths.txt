@@ -1,0 +1,97 @@
+----- Recursive, TC:- O(2^(m*n)) & SC:- O(m+n) for stack space -----
+
+class Solution {
+    private int counter(int row, int col, int m, int n) {
+        if (row == m || col == n) {
+            return 0;
+        }
+        if (row == m - 1 && col == n - 1) {
+            return 1;
+        }
+        return counter(row + 1, col, m, n) + counter(row, col + 1, m, n);
+    }
+
+    public int uniquePaths(int m, int n) {
+        return counter(0, 0, m, n);
+    }
+}
+
+----- Recursive using dp, TC:- O(m*n) & SC:- O((n-1)+(m-1)) + O(m*n) for stack space and dp array -----
+
+class Solution {
+    private int counter(int row, int col, int m, int n, int[][] dp) {
+        if (row == m || col == n) {
+            return 0;
+        }
+        if (row == m - 1 && col == n - 1) {
+            return dp[row][col] = 1;
+        }
+        if (dp[row][col] != 0) {
+            return dp[row][col];
+        }
+        return dp[row][col] = counter(row + 1, col, m, n, dp) + counter(row, col + 1, m, n, dp);
+    }
+
+    public int uniquePaths(int m, int n) {
+        int dp[][] = new int[m][n];
+        return counter(0, 0, m, n, dp);
+    }
+}
+
+----- Tabulation, TC:- O(m*n) & SC:- O(m*n) for dp array -----
+
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int dp[][] = new int[m][n];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                if (i == m - 1 && j == n - 1) {
+                    dp[i][j] = 1;
+                    continue;
+                }
+                int temp = 0;
+                temp += (i < m - 1) ? dp[i + 1][j] : 0;
+                temp += (j < n - 1) ? dp[i][j + 1] : 0;
+                dp[i][j] = temp;
+            }
+        }
+        return dp[0][0];
+    }
+}
+
+----- Space optimization, TC:- O(m*n) & SC:- O(n) -----
+
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int prev[] = new int[n];
+        for (int i = m - 1; i >= 0; i--) {
+            int curr[] = new int[n];
+            for (int j = n - 1; j >= 0; j--) {
+                if (i == m - 1 && j == n - 1) {
+                    curr[j] = 1;
+                    continue;
+                }
+                int temp = 0;
+                temp += (i < m - 1) ? prev[j] : 0;
+                temp += (j < n - 1) ? curr[j + 1] : 0;
+                curr[j] = temp;
+            }
+            prev = curr;
+        }
+        return prev[0];
+    }
+}
+
+Reference:- https://takeuforward.org/data-structure/grid-unique-paths-count-paths-from-left-top-to-the-right-bottom-of-a-matrix/
+------ Combinatorics solution, TC:- O(m*n), SC:- O(m*n) for DP(matrix) array ------
+
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int N = m + n - 2, r = Math.min(m, n) - 1; //using nCr formula
+        double res = 1;
+        for (int i = 1; i <= r; i++) {
+            res = res * (N - r + i) / i; //intuitive, use pen paper to understand
+        }
+        return (int) res;
+    }
+}
